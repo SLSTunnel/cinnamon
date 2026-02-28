@@ -1,17 +1,17 @@
 #!/usr/bin/python3
 """
-file_handler.py – Best-effort Linux support for Windows (.exe), Android (.apk),
+file_handler.py – Linux support for Windows (.exe), Android (.apk),
 and iOS (.ipa) file types.
 
 On Linux these file types cannot be natively installed or run.  This module
 detects each extension (and validates via magic bytes where possible) and
-provides opt-in, non-destructive user-facing actions:
+provides user-facing actions:
 
-  .exe  – offer to run via Wine/Proton if installed; otherwise guide user to
-          install Wine.
-  .apk  – offer to sideload via ``adb`` to an attached Android device or
-          emulator; otherwise suggest installing ``adb`` / setting up an
-          emulator.
+  .exe  – run via Wine/Proton if installed; otherwise auto-install Wine using
+          the system package manager.
+  .apk  – sideload via ``adb`` to an attached Android device or emulator;
+          if ``adb`` is absent it is auto-installed via the system package
+          manager.
   .ipa  – explain iOS signing/device restrictions; offer to extract and show
           metadata (treated as ZIP).  Does not claim actual installation.
 
@@ -114,6 +114,72 @@ def adb_available():
 
 
 # ---------------------------------------------------------------------------
+# Package manager detection and auto-install helpers
+# ---------------------------------------------------------------------------
+
+#: Ordered list of (pm_command, pm_key) pairs to probe.
+_PACKAGE_MANAGERS = [
+    ("apt-get", "apt-get"),   # Debian / Ubuntu / Mint
+    ("dnf", "dnf"),            # Fedora / RHEL
+    ("pacman", "pacman"),      # Arch
+    ("zypper", "zypper"),      # openSUSE
+]
+
+#: Install base-argv for each known package manager (uses pkexec for GUI
+#: privilege escalation without a password prompt in most Polkit setups).
+_PM_INSTALL_BASE = {
+    "apt-get": ["pkexec", "apt-get", "install", "-y"],
+    "dnf":     ["pkexec", "dnf",     "install", "-y"],
+    "pacman":  ["pkexec", "pacman",  "-S", "--noconfirm"],
+    "zypper":  ["pkexec", "zypper",  "install", "-y"],
+}
+
+#: Package names for each tool on each supported package manager.
+_TOOL_PACKAGES = {
+    "wine": {
+        "apt-get": ["wine"],
+        "dnf":     ["wine"],
+        "pacman":  ["wine"],
+        "zypper":  ["wine"],
+    },
+    "adb": {
+        "apt-get": ["adb"],
+        "dnf":     ["android-tools"],
+        "pacman":  ["android-tools"],
+        "zypper":  ["android-tools"],
+    },
+}
+
+
+def detect_package_manager():
+    """Return ``(pm_key, base_install_argv)`` for the first package manager
+    found on ``PATH``, or ``None`` when none is available."""
+    for pm_cmd, pm_key in _PACKAGE_MANAGERS:
+        if check_tool(pm_cmd):
+            return pm_key, _PM_INSTALL_BASE[pm_key]
+    return None
+
+
+def build_install_argv(tool_name):
+    """Return the ``argv`` list that will auto-install *tool_name* via the
+    detected package manager (using ``pkexec`` for privilege escalation).
+
+    Returns ``None`` when no supported package manager is found or when
+    *tool_name* is not known.
+    """
+    pm_info = detect_package_manager()
+    if pm_info is None:
+        log.debug("build_install_argv: no supported package manager found")
+        return None
+    pm_key, base_argv = pm_info
+    packages = _TOOL_PACKAGES.get(tool_name, {}).get(pm_key)
+    if not packages:
+        log.debug("build_install_argv: no package mapping for %r on %s", tool_name, pm_key)
+        return None
+    return base_argv + packages
+
+
+# ---------------------------------------------------------------------------
 # IPA metadata helpers
 # ---------------------------------------------------------------------------
 
@@ -167,24 +233,35 @@ def handle_exe(path, _notify_fn=None):
         result["action"] = "run_with_wine"
         result["tool"] = tool
         result["argv"] = [tool, path]
+        result["auto_install_argv"] = []
         result["message"] = (
             "This is a Windows executable.  It can be run using {tool}.\n\n"
             "Command: {tool} {path}"
         ).format(tool=tool, path=path)
         title = "Run Windows application"
     else:
+        install_argv = build_install_argv("wine")
         result["action"] = "install_wine"
         result["tool"] = None
         result["argv"] = []
-        result["message"] = (
-            "This is a Windows executable, but Wine is not installed.\n\n"
-            "To run Windows applications on Linux, install Wine:\n"
-            "  • Debian/Ubuntu/Mint: sudo apt install wine\n"
-            "  • Fedora: sudo dnf install wine\n"
-            "  • Arch: sudo pacman -S wine\n\n"
-            "Alternatively, install Proton via Steam."
-        )
-        title = "Wine not installed"
+        result["auto_install_argv"] = install_argv or []
+        if install_argv:
+            result["message"] = (
+                "This is a Windows executable, but Wine is not installed.\n\n"
+                "Wine will be installed automatically so this file can be run."
+            )
+            title = "Install Wine"
+        else:
+            result["message"] = (
+                "This is a Windows executable, but Wine is not installed\n"
+                "and no supported package manager was found.\n\n"
+                "Install Wine manually:\n"
+                "  • Debian/Ubuntu/Mint: sudo apt install wine\n"
+                "  • Fedora: sudo dnf install wine\n"
+                "  • Arch: sudo pacman -S wine\n\n"
+                "Alternatively, install Proton via Steam."
+            )
+            title = "Wine not installed"
 
     log.info("handle_exe: %s", result["message"])
     if callable(_notify_fn):
@@ -207,6 +284,7 @@ def handle_apk(path, _notify_fn=None):
     if result["adb_available"]:
         result["action"] = "adb_install"
         result["argv"] = ["adb", "install", path]
+        result["auto_install_argv"] = []
         result["message"] = (
             "This is an Android package.\n\n"
             "adb is available.  You can sideload it to a connected device or\n"
@@ -216,18 +294,29 @@ def handle_apk(path, _notify_fn=None):
         ).format(path=path)
         title = "Install Android package"
     else:
+        install_argv = build_install_argv("adb")
         result["action"] = "install_adb"
         result["argv"] = []
-        result["message"] = (
-            "This is an Android package, but adb is not installed.\n\n"
-            "To sideload APKs to an Android device or emulator:\n"
-            "  • Debian/Ubuntu/Mint: sudo apt install adb\n"
-            "  • Fedora: sudo dnf install android-tools\n"
-            "  • Arch: sudo pacman -S android-tools\n\n"
-            "You can also use an Android emulator such as Waydroid or\n"
-            "Android Studio's AVD manager."
-        )
-        title = "adb not installed"
+        result["auto_install_argv"] = install_argv or []
+        if install_argv:
+            result["message"] = (
+                "This is an Android package, but adb is not installed.\n\n"
+                "adb will be installed automatically so you can sideload\n"
+                "this package to a connected Android device or emulator."
+            )
+            title = "Install adb"
+        else:
+            result["message"] = (
+                "This is an Android package, but adb is not installed\n"
+                "and no supported package manager was found.\n\n"
+                "Install adb manually:\n"
+                "  • Debian/Ubuntu/Mint: sudo apt install adb\n"
+                "  • Fedora: sudo dnf install android-tools\n"
+                "  • Arch: sudo pacman -S android-tools\n\n"
+                "You can also use an Android emulator such as Waydroid or\n"
+                "Android Studio's AVD manager."
+            )
+            title = "adb not installed"
 
     log.info("handle_apk: %s", result["message"])
     if callable(_notify_fn):
@@ -250,6 +339,7 @@ def handle_ipa(path, _notify_fn=None):
         "action": "inspect_only",
         "metadata": meta,
         "argv": [],
+        "auto_install_argv": [],
     }
 
     meta_lines = []

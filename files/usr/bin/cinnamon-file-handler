@@ -6,8 +6,9 @@ Usage:
     cinnamon-file-handler <filepath>
 
 Displays a GTK message dialog describing what actions are available for the
-given file on Linux and, where a compatible tool is present, optionally
-launches it.
+given file on Linux.  When a required tool (Wine, adb) is missing, offers to
+install it automatically via the system package manager (using pkexec for
+privilege escalation), then re-dispatches to run the original file.
 """
 
 import sys
@@ -63,6 +64,78 @@ def show_dialog(title, message, action=None, argv=None):
             err.destroy()
 
 
+def _run_install(argv):
+    """Run *argv* synchronously and return the exit code."""
+    try:
+        return subprocess.call(argv)  # noqa: S603
+    except FileNotFoundError:
+        return -1
+
+
+def _show_error(title, message):
+    Gtk = _require_gi()
+    dlg = Gtk.MessageDialog(
+        message_type=Gtk.MessageType.ERROR,
+        buttons=Gtk.ButtonsType.OK,
+        text=title,
+    )
+    dlg.format_secondary_text(message)
+    dlg.set_title("Cinnamon File Handler")
+    dlg.run()
+    dlg.destroy()
+
+
+def _offer_install_and_run(result, path, file_handler):
+    """When *auto_install_argv* is populated, show an install confirmation
+    dialog.  On confirmation run the installer, then re-dispatch.
+
+    Returns True when the caller should stop (either install was declined,
+    failed, or the post-install dispatch was handled inside this function).
+    Returns False when the caller should proceed with the normal dialog flow.
+    """
+    Gtk = _require_gi()
+    install_argv = result.get("auto_install_argv") or []
+    if not install_argv:
+        return False
+
+    # Ask the user before installing anything
+    dlg = Gtk.MessageDialog(
+        message_type=Gtk.MessageType.QUESTION,
+        buttons=Gtk.ButtonsType.YES_NO,
+        text=_title_for(result),
+    )
+    dlg.format_secondary_text(result["message"] + "\n\nInstall now?")
+    dlg.set_title("Cinnamon File Handler")
+    response = dlg.run()
+    dlg.destroy()
+
+    if response != Gtk.ResponseType.YES:
+        return True  # user declined
+
+    # Run the installer synchronously
+    rc = _run_install(install_argv)
+    if rc != 0:
+        _show_error(
+            "Installation failed",
+            "The package installer exited with code {}.  "
+            "Please install the required package manually.".format(rc),
+        )
+        return True
+
+    # Re-dispatch now that the tool should be available
+    new_result = file_handler.dispatch(path)
+    if new_result is None:
+        return True
+
+    show_dialog(
+        title=_title_for(new_result),
+        message=new_result["message"],
+        action=new_result.get("action"),
+        argv=new_result.get("argv") or None,
+    )
+    return True
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: cinnamon-file-handler <filepath>", file=sys.stderr)
@@ -87,6 +160,10 @@ def main():
         print("Unsupported file type: {}".format(path), file=sys.stderr)
         sys.exit(1)
 
+    # If a tool is missing but auto-install is available, handle it first
+    if _offer_install_and_run(result, path, file_handler):
+        return
+
     show_dialog(
         title=_title_for(result),
         message=result["message"],
@@ -98,9 +175,9 @@ def main():
 def _title_for(result):
     titles = {
         "run_with_wine": "Run Windows application",
-        "install_wine": "Wine not installed",
+        "install_wine": "Install Wine",
         "adb_install": "Install Android package",
-        "install_adb": "adb not installed",
+        "install_adb": "Install adb",
         "inspect_only": "iOS application (inspection only)",
     }
     return titles.get(result.get("action", ""), "File Handler")

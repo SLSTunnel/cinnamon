@@ -14,32 +14,40 @@ please see https://projects.linuxmint.com/cinnamon/.
 
 Handling Windows, Android, and iOS files
 =========================================
-Cinnamon includes best-effort, non-destructive support for opening the following
-file types on Linux via the ``cinnamon-file-handler`` utility:
+Cinnamon includes support for opening the following file types on Linux via
+the ``cinnamon-file-handler`` utility:
 
 `.exe` – Windows executables
   Linux cannot natively run Windows executables.  When ``wine`` or ``proton``
   is installed the handler offers to launch the file with that tool.  If
-  neither is present the user is shown installation instructions.
+  neither is present, Wine is **automatically installed** using the system
+  package manager (after user confirmation).
 
-  **Optional dependencies** (install one):
+  Package installed automatically (if needed):
 
-  * Wine – ``sudo apt install wine`` / ``sudo dnf install wine`` /
-    ``sudo pacman -S wine``
-  * Proton – install via *Steam → Settings → Compatibility*
+  * Debian / Ubuntu / Mint: ``wine`` (via ``apt-get``)
+  * Fedora / RHEL: ``wine`` (via ``dnf``)
+  * Arch: ``wine`` (via ``pacman``)
+  * openSUSE: ``wine`` (via ``zypper``)
+
+  Alternatively, Proton can be installed manually via *Steam → Settings →
+  Compatibility*.
 
 `.apk` – Android packages
   APK files can be side-loaded to an attached Android device or emulator via
-  ``adb``.  When ``adb`` is installed the handler shows the exact command to
-  run.  If ``adb`` is absent the user is guided to install it.
+  ``adb``.  When ``adb`` is installed the handler shows the sideload command.
+  If ``adb`` is absent it is **automatically installed** via the system
+  package manager (after user confirmation).
 
-  **Optional dependencies**:
+  Package installed automatically (if needed):
 
-  * Android Debug Bridge (adb) –
-    ``sudo apt install adb`` /
-    ``sudo dnf install android-tools`` /
-    ``sudo pacman -S android-tools``
-  * Android emulator – `Waydroid <https://waydroid.com/>`_ or Android Studio AVD
+  * Debian / Ubuntu / Mint: ``adb`` (via ``apt-get``)
+  * Fedora / RHEL: ``android-tools`` (via ``dnf``)
+  * Arch: ``android-tools`` (via ``pacman``)
+  * openSUSE: ``android-tools`` (via ``zypper``)
+
+  An Android emulator such as `Waydroid <https://waydroid.com/>`_ or Android
+  Studio's AVD manager can also be used.
 
 `.ipa` – iOS application archives
   iOS apps **cannot be installed on Linux** due to Apple's code-signing and
@@ -47,8 +55,10 @@ file types on Linux via the ``cinnamon-file-handler`` utility:
   (IPA files are ZIP archives) and shows a message explaining the limitation.
   No installation is attempted.
 
-None of these handlers modify existing Cinnamon flows or change the behaviour
-of already-supported file types.
+Auto-install uses ``pkexec`` for privilege escalation; a Polkit authentication
+dialog will appear before any package is installed.  None of these handlers
+modify existing Cinnamon flows or change the behaviour of already-supported
+file types.
 
 
 License

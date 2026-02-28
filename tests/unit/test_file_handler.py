@@ -147,6 +147,83 @@ class TestAdbAvailable(unittest.TestCase):
         self.assertFalse(file_handler.adb_available())
 
 
+class TestDetectPackageManager(unittest.TestCase):
+    @patch("cinnamon.file_handler.check_tool")
+    def test_apt_get_detected(self, mock_check):
+        mock_check.side_effect = lambda name: name == "apt-get"
+        result = file_handler.detect_package_manager()
+        self.assertIsNotNone(result)
+        pm_key, base_argv = result
+        self.assertEqual(pm_key, "apt-get")
+        self.assertIn("apt-get", base_argv)
+        self.assertIn("pkexec", base_argv)
+
+    @patch("cinnamon.file_handler.check_tool")
+    def test_dnf_detected(self, mock_check):
+        mock_check.side_effect = lambda name: name == "dnf"
+        result = file_handler.detect_package_manager()
+        self.assertIsNotNone(result)
+        pm_key, _ = result
+        self.assertEqual(pm_key, "dnf")
+
+    @patch("cinnamon.file_handler.check_tool")
+    def test_pacman_detected(self, mock_check):
+        mock_check.side_effect = lambda name: name == "pacman"
+        result = file_handler.detect_package_manager()
+        self.assertIsNotNone(result)
+        pm_key, _ = result
+        self.assertEqual(pm_key, "pacman")
+
+    @patch("cinnamon.file_handler.check_tool")
+    def test_zypper_detected(self, mock_check):
+        mock_check.side_effect = lambda name: name == "zypper"
+        result = file_handler.detect_package_manager()
+        self.assertIsNotNone(result)
+        pm_key, _ = result
+        self.assertEqual(pm_key, "zypper")
+
+    @patch("cinnamon.file_handler.check_tool", return_value=False)
+    def test_none_when_no_pm(self, _mock):
+        self.assertIsNone(file_handler.detect_package_manager())
+
+    @patch("cinnamon.file_handler.check_tool")
+    def test_apt_preferred_over_dnf(self, mock_check):
+        # apt-get comes first in the list; both present -> apt-get wins
+        mock_check.side_effect = lambda name: name in ("apt-get", "dnf")
+        pm_key, base_argv = file_handler.detect_package_manager()
+        self.assertEqual(pm_key, "apt-get")
+        self.assertIn("apt-get", base_argv)
+
+
+class TestBuildInstallArgv(unittest.TestCase):
+    @patch("cinnamon.file_handler.detect_package_manager",
+           return_value=("apt-get", ["pkexec", "apt-get", "install", "-y"]))
+    def test_wine_on_apt(self, _mock):
+        argv = file_handler.build_install_argv("wine")
+        self.assertEqual(argv, ["pkexec", "apt-get", "install", "-y", "wine"])
+
+    @patch("cinnamon.file_handler.detect_package_manager",
+           return_value=("dnf", ["pkexec", "dnf", "install", "-y"]))
+    def test_adb_on_dnf(self, _mock):
+        argv = file_handler.build_install_argv("adb")
+        self.assertEqual(argv, ["pkexec", "dnf", "install", "-y", "android-tools"])
+
+    @patch("cinnamon.file_handler.detect_package_manager",
+           return_value=("pacman", ["pkexec", "pacman", "-S", "--noconfirm"]))
+    def test_adb_on_pacman(self, _mock):
+        argv = file_handler.build_install_argv("adb")
+        self.assertEqual(argv, ["pkexec", "pacman", "-S", "--noconfirm", "android-tools"])
+
+    @patch("cinnamon.file_handler.detect_package_manager", return_value=None)
+    def test_returns_none_when_no_pm(self, _mock):
+        self.assertIsNone(file_handler.build_install_argv("wine"))
+
+    @patch("cinnamon.file_handler.detect_package_manager",
+           return_value=("apt-get", ["pkexec", "apt-get", "install", "-y"]))
+    def test_unknown_tool_returns_none(self, _mock):
+        self.assertIsNone(file_handler.build_install_argv("unknown_tool"))
+
+
 class TestHandleExe(unittest.TestCase):
     @patch("cinnamon.file_handler.wine_available", return_value=True)
     @patch("cinnamon.file_handler.check_tool")
@@ -157,6 +234,7 @@ class TestHandleExe(unittest.TestCase):
         self.assertEqual(result["tool"], "wine")
         self.assertEqual(result["argv"][0], "wine")
         self.assertTrue(result["wine_available"])
+        self.assertEqual(result["auto_install_argv"], [])
 
     @patch("cinnamon.file_handler.wine_available", return_value=True)
     @patch("cinnamon.file_handler.check_tool")
@@ -166,15 +244,24 @@ class TestHandleExe(unittest.TestCase):
         self.assertEqual(result["tool"], "proton")
 
     @patch("cinnamon.file_handler.wine_available", return_value=False)
-    def test_wine_absent_action(self, _mock):
+    @patch("cinnamon.file_handler.build_install_argv", return_value=["pkexec", "apt-get", "install", "-y", "wine"])
+    def test_wine_absent_auto_install_argv(self, _mock_build, _mock_wine):
         result = file_handler.handle_exe("/tmp/setup.exe")
         self.assertEqual(result["action"], "install_wine")
         self.assertFalse(result["wine_available"])
         self.assertEqual(result["argv"], [])
+        self.assertEqual(result["auto_install_argv"], ["pkexec", "apt-get", "install", "-y", "wine"])
+
+    @patch("cinnamon.file_handler.wine_available", return_value=False)
+    @patch("cinnamon.file_handler.build_install_argv", return_value=None)
+    def test_wine_absent_no_pm_empty_install_argv(self, _mock_build, _mock_wine):
+        result = file_handler.handle_exe("/tmp/setup.exe")
+        self.assertEqual(result["auto_install_argv"], [])
 
     def test_notify_fn_called(self):
         notifications = []
-        with patch("cinnamon.file_handler.wine_available", return_value=False):
+        with patch("cinnamon.file_handler.wine_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=None):
             file_handler.handle_exe("/tmp/setup.exe", _notify_fn=lambda t, b: notifications.append((t, b)))
         self.assertEqual(len(notifications), 1)
 
@@ -186,16 +273,26 @@ class TestHandleApk(unittest.TestCase):
         self.assertEqual(result["action"], "adb_install")
         self.assertIn("adb", result["argv"])
         self.assertIn("install", result["argv"])
+        self.assertEqual(result["auto_install_argv"], [])
 
     @patch("cinnamon.file_handler.adb_available", return_value=False)
-    def test_adb_absent_action(self, _mock):
+    @patch("cinnamon.file_handler.build_install_argv", return_value=["pkexec", "apt-get", "install", "-y", "adb"])
+    def test_adb_absent_auto_install_argv(self, _mock_build, _mock_adb):
         result = file_handler.handle_apk("/tmp/app.apk")
         self.assertEqual(result["action"], "install_adb")
         self.assertEqual(result["argv"], [])
+        self.assertEqual(result["auto_install_argv"], ["pkexec", "apt-get", "install", "-y", "adb"])
+
+    @patch("cinnamon.file_handler.adb_available", return_value=False)
+    @patch("cinnamon.file_handler.build_install_argv", return_value=None)
+    def test_adb_absent_no_pm_empty_install_argv(self, _mock_build, _mock_adb):
+        result = file_handler.handle_apk("/tmp/app.apk")
+        self.assertEqual(result["auto_install_argv"], [])
 
     def test_notify_fn_called(self):
         notifications = []
-        with patch("cinnamon.file_handler.adb_available", return_value=False):
+        with patch("cinnamon.file_handler.adb_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=None):
             file_handler.handle_apk("/tmp/app.apk", _notify_fn=lambda t, b: notifications.append((t, b)))
         self.assertEqual(len(notifications), 1)
 
@@ -220,14 +317,16 @@ class TestHandleIpa(unittest.TestCase):
 class TestDispatch(unittest.TestCase):
     def test_dispatch_exe(self):
         with patch("cinnamon.file_handler.verify_magic", return_value=True), \
-             patch("cinnamon.file_handler.wine_available", return_value=False):
+            patch("cinnamon.file_handler.wine_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=None):
             result = file_handler.dispatch("/tmp/program.exe")
         self.assertIsNotNone(result)
         self.assertEqual(result["ext"], ".exe")
 
     def test_dispatch_apk(self):
         with patch("cinnamon.file_handler.verify_magic", return_value=True), \
-             patch("cinnamon.file_handler.adb_available", return_value=False):
+            patch("cinnamon.file_handler.adb_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=None):
             result = file_handler.dispatch("/tmp/app.apk")
         self.assertIsNotNone(result)
         self.assertEqual(result["ext"], ".apk")
@@ -245,9 +344,18 @@ class TestDispatch(unittest.TestCase):
     def test_dispatch_magic_mismatch_still_dispatches(self):
         """Magic mismatch should log a warning but still call the handler."""
         with patch("cinnamon.file_handler.verify_magic", return_value=False), \
-             patch("cinnamon.file_handler.wine_available", return_value=False):
+            patch("cinnamon.file_handler.wine_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=None):
             result = file_handler.dispatch("/tmp/fake.exe")
         self.assertIsNotNone(result)
+
+    def test_dispatch_result_has_auto_install_argv_key(self):
+        with patch("cinnamon.file_handler.verify_magic", return_value=True), \
+            patch("cinnamon.file_handler.wine_available", return_value=False), \
+            patch("cinnamon.file_handler.build_install_argv", return_value=["pkexec", "apt-get", "install", "-y", "wine"]):
+            result = file_handler.dispatch("/tmp/program.exe")
+        self.assertIn("auto_install_argv", result)
+        self.assertEqual(result["auto_install_argv"], ["pkexec", "apt-get", "install", "-y", "wine"])
 
 
 if __name__ == "__main__":
