@@ -185,7 +185,7 @@ log "Starting live-build (this may take 20-40 minutes)…"
 lb build 2>&1 | tee /tmp/lemon-iso-build.log
 
 # live-build writes the ISO as live-image-*.hybrid.iso in the build dir
-BUILT_ISO="$(ls "${BUILD_DIR}"/live-image-*.hybrid.iso 2>/dev/null | head -1)"
+BUILT_ISO="$(find "${BUILD_DIR}" -maxdepth 1 -name 'live-image-*.hybrid.iso' 2>/dev/null | head -1)"
 [[ -n "$BUILT_ISO" ]] || die "live-build did not produce an ISO. See /tmp/lemon-iso-build.log"
 
 # ---------------------------------------------------------------------------
