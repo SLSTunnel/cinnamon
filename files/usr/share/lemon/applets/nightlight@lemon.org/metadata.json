@@ -1,8 +1,7 @@
 {
-    "description": "Activate/deactivate Night Light mode.",
+    "description": "Activate/deactivate Night Light mode and adjust color temperature.",
     "icon": "cs-nightlight",
     "max-instances": "1",
-    "hide-configuration": true,
     "uuid": "nightlight@lemon.org",
     "name": "Night Light"
 }

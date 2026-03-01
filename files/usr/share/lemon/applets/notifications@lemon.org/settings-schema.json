@@ -39,6 +39,12 @@
         "default": "<Super>n",
         "tooltip" : "Set keybinding(s) to show the notification popup menu."
     },
+    "keyDnd": {
+        "type": "keybinding",
+        "description": "Toggle Do Not Disturb",
+        "default": "<Super>d",
+        "tooltip" : "Set keybinding(s) to toggle Do Not Disturb mode."
+    },
     "keyClear": {
         "type": "keybinding",
         "description": "Clear notifications",

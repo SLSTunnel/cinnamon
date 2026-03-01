@@ -14,6 +14,8 @@ const Gettext = imports.gettext.domain("lemon-applets");
 const Util = imports.misc.util;
 
 const PANEL_EDIT_MODE_KEY = "panel-edit-mode";
+const NOTIFICATIONS_SCHEMA = "org.lemon.desktop.notifications";
+const DISPLAY_NOTIFICATIONS_KEY = "display-notifications";
 
 class LemonNotificationsApplet extends Applet.TextIconApplet {
     constructor(metadata, orientation, panel_height, instanceId) {
@@ -27,9 +29,18 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
         this.settings.bind("showEmptyTray", "showEmptyTray", this._show_hide_tray);
         this.settings.bind("keyOpen", "keyOpen", this._setKeybinding);
         this.settings.bind("keyClear", "keyClear", this._setKeybinding);
+        this.settings.bind("keyDnd", "keyDnd", this._setKeybinding);
         this.settings.bind("showNotificationCount", "showNotificationCount", this.update_list);
         this.settings.bind("showNewestFirst", "showNewestFirst", this.update_list);
         this._setKeybinding();
+
+        // Do Not Disturb GSettings
+        this._notifSettings = new Gio.Settings({ schema_id: NOTIFICATIONS_SCHEMA });
+        this._dndEnabled = !this._notifSettings.get_boolean(DISPLAY_NOTIFICATIONS_KEY);
+        this._notifSettingsId = this._notifSettings.connect(
+            'changed::' + DISPLAY_NOTIFICATIONS_KEY,
+            Lang.bind(this, this._onDndSettingsChanged)
+        );
 
         // Layout
         this._orientation = orientation;
@@ -50,17 +61,33 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
     _setKeybinding() {
         Main.keybindingManager.addXletHotKey(this, "notification-open", this.keyOpen, Lang.bind(this, this._openMenu));
         Main.keybindingManager.addXletHotKey(this, "notification-clear", this.keyClear, Lang.bind(this, this._clear_all));
+        Main.keybindingManager.addXletHotKey(this, "notification-dnd", this.keyDnd, Lang.bind(this, this._toggle_dnd));
     }
 
     on_applet_removed_from_panel () {
         Main.keybindingManager.removeXletHotKey(this, "notification-open");
         Main.keybindingManager.removeXletHotKey(this, "notification-clear");
+        Main.keybindingManager.removeXletHotKey(this, "notification-dnd");
         global.settings.disconnect(this.panelEditModeHandler);
-        
+        this._notifSettings.disconnect(this._notifSettingsId);
+
         MessageTray.extensionsHandlingNotifications--;
         if (MessageTray.extensionsHandlingNotifications === 0) {
             this._clear_all();
         }
+    }
+
+    _onDndSettingsChanged() {
+        this._dndEnabled = !this._notifSettings.get_boolean(DISPLAY_NOTIFICATIONS_KEY);
+        if (this._dnd_switch) {
+            this._dnd_switch.setToggleState(this._dndEnabled);
+        }
+        this.update_list();
+    }
+
+    _toggle_dnd() {
+        this._dndEnabled = !this._dndEnabled;
+        this._notifSettings.set_boolean(DISPLAY_NOTIFICATIONS_KEY, !this._dndEnabled);
     }
 
     _openMenu() {
@@ -77,6 +104,16 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
         this._maincontainer = new St.BoxLayout({name: 'traycontainer', vertical: true});
         this._notificationbin = new St.BoxLayout({vertical:true});
         this.button_label_box = new St.BoxLayout();
+
+        // Do Not Disturb switch
+        this._dnd_switch = new PopupMenu.PopupSwitchMenuItem(_("Do Not Disturb"), this._dndEnabled);
+        this._dnd_switch.connect('toggled', Lang.bind(this, function() {
+            this._dndEnabled = this._dnd_switch.state;
+            this._notifSettings.set_boolean(DISPLAY_NOTIFICATIONS_KEY, !this._dndEnabled);
+            this.update_list();
+        }));
+
+        let dnd_separator = new PopupMenu.PopupSeparatorMenuItem();
 
         // Setup the tray icon.
         this.menu_label = new PopupMenu.PopupMenuItem(stringify(this.notifications.length));
@@ -95,7 +132,11 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
             this.menu.addActor(this._maincontainer);
             this.menu.addMenuItem(this.clear_separator);
             this.menu.addMenuItem(this.clear_action);
+            this.menu.addMenuItem(dnd_separator);
+            this.menu.addMenuItem(this._dnd_switch);
         } else {
+            this.menu.addMenuItem(this._dnd_switch);
+            this.menu.addMenuItem(dnd_separator);
             this.menu.addMenuItem(this.clear_action);
             this.menu.addMenuItem(this.clear_separator);
             this.menu.addMenuItem(this.menu_label);
@@ -170,10 +211,28 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
     update_list () {
         try {
             let count = this.notifications.length;
-            if (count > 0) {    // There are notifications.
+            if (this._dndEnabled) {
+                // DND mode: show DND icon regardless of notification count
+                this._blinking = false;
+                this.set_applet_icon_symbolic_name("dnd-notif");
+                this.set_applet_tooltip(_("Notifications (Do Not Disturb)"));
+                if (count > 0 && this.showNotificationCount) {
+                    this.set_applet_label(count.toString());
+                } else {
+                    this.set_applet_label('');
+                }
+                this.actor.show();
+                if (count > 0) {
+                    this.clear_action.actor.show();
+                    this._reorderNotifications();
+                } else {
+                    this.clear_action.actor.hide();
+                }
+            } else if (count > 0) {    // There are notifications.
                 this.actor.show();
                 this.clear_action.actor.show();
                 this.set_applet_label(count.toString());
+                this.set_applet_tooltip(_("Notifications"));
                 this._reorderNotifications();
                 // Find max urgency and derive list icon.
                 let max_urgency = -1;
@@ -203,6 +262,7 @@ class LemonNotificationsApplet extends Applet.TextIconApplet {
                 this._blinking = false;
                 this.set_applet_label('');
                 this.set_applet_icon_symbolic_name("empty-notif");
+                this.set_applet_tooltip(_("Notifications"));
                 this.clear_action.actor.hide();
                 if (!this.showEmptyTray) {
                     this.actor.hide();
