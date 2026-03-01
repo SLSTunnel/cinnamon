@@ -10,10 +10,10 @@ Installing via USB
 You can run and install the Lemon desktop (via Linux Mint) from a USB
 drive by following these steps:
 
-**1. Download a Linux Mint ISO**
+**1. Download a Linux Lemon ISO**
 
 Download the latest Linux Mint ISO that ships with Lemon from the official
-website: https://linuxmint.com/download.php
+website: https://github.com/SLSTunnel/Lemon/releases
 
 Choose the **Lemon** edition and select a mirror to download the ``.iso``
 file.
