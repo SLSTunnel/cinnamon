@@ -52,6 +52,28 @@ ISO_NAME="${SUITE}-lemon-${ARCH}.iso"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # ---------------------------------------------------------------------------
+# Ubuntu vs Debian mode detection
+# ---------------------------------------------------------------------------
+# live-build defaults to Debian mode; Ubuntu suites require --mode ubuntu and
+# Ubuntu-specific mirror URLs.  Architectures in the "main" Ubuntu archive
+# (amd64 / i386) are served from archive.ubuntu.com; everything else uses the
+# ports mirror.
+UBUNTU_SUITES=(bionic focal jammy lunar mantic noble oracular plucky)  # update as new Ubuntu LTS/interim releases are published
+LB_MODE="debian"
+LB_MIRROR="http://deb.debian.org/debian/"
+for _us in "${UBUNTU_SUITES[@]}"; do
+    if [[ "$SUITE" == "$_us" ]]; then
+        LB_MODE="ubuntu"
+        if [[ "$ARCH" == "amd64" || "$ARCH" == "i386" ]]; then
+            LB_MIRROR="http://archive.ubuntu.com/ubuntu/"
+        else
+            LB_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
+        fi
+        break
+    fi
+done
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 log()  { echo "[build-iso] $*"; }
@@ -91,9 +113,13 @@ cd "$BUILD_DIR"
 # Configure live-build
 # ---------------------------------------------------------------------------
 lb config \
-    --architectures "$ARCH" \
-    --distribution  "$SUITE" \
-    --binary-images iso-hybrid \
+    --mode           "$LB_MODE" \
+    --architectures  "$ARCH" \
+    --distribution   "$SUITE" \
+    --mirror-bootstrap       "$LB_MIRROR" \
+    --mirror-chroot          "$LB_MIRROR" \
+    --mirror-binary          "$LB_MIRROR" \
+    --binary-images  iso-hybrid \
     --debian-installer live \
     --debian-installer-gui true \
     --archive-areas "main restricted universe multiverse" \
