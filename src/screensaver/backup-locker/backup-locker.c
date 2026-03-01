@@ -601,7 +601,7 @@ create_window (BackupLocker *self)
 
         const gchar *bug_report[] = {
             N_("If you can reproduce this behavior, please file a report here:"),
-            "https://github.com/linuxmint/cinnamon"
+            "https://github.com/SLSTunnel/cinnamon"
         };
 
         GString *str = g_string_new (NULL);

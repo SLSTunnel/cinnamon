@@ -14,10 +14,12 @@ message('Installing python modules to: @0@'.format(install_path))
 install_data(
   [
     'cinnamon/__init__.py',
+    'cinnamon/file_handler.py',
     'cinnamon/harvester.py',
     'cinnamon/logger.py',
     'cinnamon/proxygsettings.py',
-    'cinnamon/updates.py'
+    'cinnamon/updates.py',
+    'cinnamon/zram_setup.py',
   ],
   install_dir: join_paths(install_path, 'cinnamon'),
 )

@@ -1,0 +1,114 @@
+#!/usr/bin/python3
+"""
+cinnamon-zram-setup – Write ZRAM swap configuration during OS installation.
+
+Usage:
+    cinnamon-zram-setup [--target TARGET_ROOT] [--meminfo MEMINFO_PATH]
+
+This script is intended to be called from installer hooks:
+
+  * Ubiquity  – late_command or ubiquity plugin postinstall step
+  * Calamares – postinstall or userscripts module
+
+It detects total system RAM from /proc/meminfo, calculates the optimal ZRAM
+compressed-swap size, and writes /etc/systemd/zram-generator.conf into the
+target root filesystem so that the installed system has persistent ZRAM swap
+from first boot—without any post-install manual step.
+
+Default target root: /target
+"""
+
+import argparse
+import importlib.util as _ilu
+import logging
+import os
+import site
+import sys
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(message)s",
+)
+
+
+def _load_zram_setup():
+    """Load cinnamon/zram_setup.py by file path.
+
+    This avoids triggering cinnamon/__init__.py, which has optional
+    system-level dependencies (PIL, GObject-Introspection) that may not be
+    present in a minimal installer live environment.  Only zram_setup.py
+    itself is needed here.
+    """
+    # Candidate directories to search: Python site-packages first (installed),
+    # then the source tree relative to this script (development / CI).
+    search_dirs = list(site.getsitepackages())
+    try:
+        search_dirs.append(site.getusersitepackages())
+    except AttributeError:
+        pass
+    # Development fallback: <repo>/python3/ when script is at files/usr/bin/
+    search_dirs.append(
+        os.path.normpath(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..", "..", "..", "python3",
+            )
+        )
+    )
+
+    for base in search_dirs:
+        candidate = os.path.join(base, "cinnamon", "zram_setup.py")
+        if os.path.isfile(candidate):
+            spec = _ilu.spec_from_file_location("cinnamon.zram_setup", candidate)
+            mod = _ilu.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            return mod
+
+    raise ImportError(
+        "Cannot find cinnamon/zram_setup.py. Searched: {}".format(search_dirs)
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=(
+            "Configure ZRAM compressed swap on the installer target filesystem."
+        ),
+    )
+    parser.add_argument(
+        "--target",
+        default="/target",
+        metavar="TARGET_ROOT",
+        help="Path where the target filesystem is mounted (default: /target).",
+    )
+    parser.add_argument(
+        "--meminfo",
+        default="/proc/meminfo",
+        metavar="MEMINFO_PATH",
+        help="Path to the meminfo file (default: /proc/meminfo).",
+    )
+    args = parser.parse_args()
+
+    if not os.path.isdir(args.target):
+        print(
+            "Error: target root {!r} does not exist or is not a directory.".format(
+                args.target
+            ),
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    zram_setup = _load_zram_setup()
+
+    try:
+        conf_path = zram_setup.install_zram_conf(
+            args.target, proc_meminfo_path=args.meminfo
+        )
+        print("ZRAM configuration written to: {}".format(conf_path))
+    except (OSError, ValueError) as exc:
+        print("Error: {}".format(exc), file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Cinnamon File Handler
+Comment=Handle Windows, Android, and iOS application files on Linux
+Exec=cinnamon-file-handler %f
+Icon=system-run
+Terminal=false
+Type=Application
+Categories=Utility;
+StartupNotify=false
+OnlyShowIn=X-Cinnamon;
+MimeType=application/x-ms-dos-executable;application/vnd.android.package-archive;application/octet-stream;
+NoDisplay=true

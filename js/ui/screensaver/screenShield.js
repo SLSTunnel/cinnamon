@@ -1159,7 +1159,7 @@ var ScreenShield = GObject.registerClass({
         if (Meta.is_wayland_compositor()) {
             // TODO: Waiting on:
             //   muffin: https://github.com/linuxmint/muffin/pull/784
-            //   cinnamon-settings-daemon: https://github.com/linuxmint/cinnamon-settings-daemon/pull/437
+            //   cinnamon-settings-daemon: https://github.com/SLSTunnel/cinnamon-settings-daemon/pull/437
             // 
             // Once those are merged we can access the layer-shell surfaces of csd-background and avoid
             // having to load them in Cinnamon.

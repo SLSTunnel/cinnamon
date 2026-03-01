@@ -1,0 +1,187 @@
+#!/usr/bin/python3
+"""
+cinnamon-file-handler – Open a .exe, .apk, or .ipa file on Linux.
+
+Usage:
+    cinnamon-file-handler <filepath>
+
+Displays a GTK message dialog describing what actions are available for the
+given file on Linux.  When a required tool (Wine, adb) is missing, offers to
+install it automatically via the system package manager (using pkexec for
+privilege escalation), then re-dispatches to run the original file.
+"""
+
+import sys
+import os
+import subprocess
+import logging
+
+logging.basicConfig(level=logging.WARNING)
+
+def _require_gi():
+    import gi
+    gi.require_version("Gtk", "3.0")
+    from gi.repository import Gtk
+    return Gtk
+
+
+def show_dialog(title, message, action=None, argv=None):
+    """Show a GTK info/question dialog and, if *argv* is set and the user
+    confirms, spawn the command."""
+    Gtk = _require_gi()
+
+    if argv:
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.QUESTION,
+            buttons=Gtk.ButtonsType.YES_NO,
+            text=title,
+        )
+        dialog.format_secondary_text(message)
+    else:
+        dialog = Gtk.MessageDialog(
+            message_type=Gtk.MessageType.INFO,
+            buttons=Gtk.ButtonsType.OK,
+            text=title,
+        )
+        dialog.format_secondary_text(message)
+
+    dialog.set_title("Cinnamon File Handler")
+    response = dialog.run()
+    dialog.destroy()
+
+    if argv and response == Gtk.ResponseType.YES:
+        try:
+            subprocess.Popen(argv)  # noqa: S603
+        except FileNotFoundError as exc:
+            err = Gtk.MessageDialog(
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text="Could not launch command",
+            )
+            err.format_secondary_text(str(exc))
+            err.set_title("Cinnamon File Handler")
+            err.run()
+            err.destroy()
+
+
+def _run_install(argv):
+    """Run *argv* synchronously and return the exit code."""
+    try:
+        return subprocess.call(argv)  # noqa: S603
+    except FileNotFoundError:
+        return -1
+
+
+def _show_error(title, message):
+    Gtk = _require_gi()
+    dlg = Gtk.MessageDialog(
+        message_type=Gtk.MessageType.ERROR,
+        buttons=Gtk.ButtonsType.OK,
+        text=title,
+    )
+    dlg.format_secondary_text(message)
+    dlg.set_title("Cinnamon File Handler")
+    dlg.run()
+    dlg.destroy()
+
+
+def _offer_install_and_run(result, path, file_handler):
+    """When *auto_install_argv* is populated, show an install confirmation
+    dialog.  On confirmation run the installer, then re-dispatch.
+
+    Returns True when the caller should stop (either install was declined,
+    failed, or the post-install dispatch was handled inside this function).
+    Returns False when the caller should proceed with the normal dialog flow.
+    """
+    Gtk = _require_gi()
+    install_argv = result.get("auto_install_argv") or []
+    if not install_argv:
+        return False
+
+    # Ask the user before installing anything
+    dlg = Gtk.MessageDialog(
+        message_type=Gtk.MessageType.QUESTION,
+        buttons=Gtk.ButtonsType.YES_NO,
+        text=_title_for(result),
+    )
+    dlg.format_secondary_text(result["message"] + "\n\nInstall now?")
+    dlg.set_title("Cinnamon File Handler")
+    response = dlg.run()
+    dlg.destroy()
+
+    if response != Gtk.ResponseType.YES:
+        return True  # user declined
+
+    # Run the installer synchronously
+    rc = _run_install(install_argv)
+    if rc != 0:
+        _show_error(
+            "Installation failed",
+            "The package installer exited with code {}.  "
+            "Please install the required package manually.".format(rc),
+        )
+        return True
+
+    # Re-dispatch now that the tool should be available
+    new_result = file_handler.dispatch(path)
+    if new_result is None:
+        return True
+
+    show_dialog(
+        title=_title_for(new_result),
+        message=new_result["message"],
+        action=new_result.get("action"),
+        argv=new_result.get("argv") or None,
+    )
+    return True
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: cinnamon-file-handler <filepath>", file=sys.stderr)
+        sys.exit(1)
+
+    path = os.path.abspath(sys.argv[1])
+
+    if not os.path.exists(path):
+        print("File not found: {}".format(path), file=sys.stderr)
+        sys.exit(1)
+
+    # Import the module from the installed location or from source tree
+    try:
+        from cinnamon import file_handler
+    except ImportError:
+        # Fall back to source tree location for development use
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "share", "cinnamon"))
+        from cinnamon import file_handler
+
+    result = file_handler.dispatch(path)
+    if result is None:
+        print("Unsupported file type: {}".format(path), file=sys.stderr)
+        sys.exit(1)
+
+    # If a tool is missing but auto-install is available, handle it first
+    if _offer_install_and_run(result, path, file_handler):
+        return
+
+    show_dialog(
+        title=_title_for(result),
+        message=result["message"],
+        action=result.get("action"),
+        argv=result.get("argv") or None,
+    )
+
+
+def _title_for(result):
+    titles = {
+        "run_with_wine": "Run Windows application",
+        "install_wine": "Install Wine",
+        "adb_install": "Install Android package",
+        "install_adb": "Install adb",
+        "inspect_only": "iOS application (inspection only)",
+    }
+    return titles.get(result.get("action", ""), "File Handler")
+
+
+if __name__ == "__main__":
+    main()

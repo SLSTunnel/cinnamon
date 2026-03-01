@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Cinnamon
 Upstream-Contact: Linux Mint Project <root@linuxmint.com>
-Source: https://github.com/linuxmint/cinnamon
+Source: https://github.com/SLSTunnel/cinnamon
 
 Files: *
 Copyright: 1989-1991, Free Software Foundation, Inc

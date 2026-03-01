@@ -290,7 +290,7 @@ class Harvester:
                 debug(f"Could not get thumbnail for {uuid}: {e}")
                 return
 
-            with open(paths.thumb_local_path, "wb", encoding="utf-8") as f:
+            with open(paths.thumb_local_path, "wb") as f:
                 f.write(r.content)
 
     def _load_metadata(self):
@@ -377,8 +377,6 @@ class Harvester:
     def _install_by_uuid(self, uuid):
         action = "upgrade" if uuid in self.meta_map else "install"
 
-        error_message = None
-        uuid = uuid
         try:
             item = self.index_cache[uuid]
         except KeyError:
