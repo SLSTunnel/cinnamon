@@ -25,7 +25,7 @@ var commandHeader = 'const Clutter = imports.gi.Clutter; ' +
                     'const Cinnamon = imports.gi.Cinnamon; ' +
                     'const Main = imports.ui.main; ' +
                     /* Utility functions...we should probably be able to use these
-                     * in Cinnamon core code too. */
+                     * in Lemon core code too. */
                     'const stage = global.stage; ' +
                     'const color = function(pixel) { let c= new Clutter.Color(); c.from_pixel(pixel); return c; }; ' +
                     /* Special lookingGlass functions */

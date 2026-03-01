@@ -2,7 +2,7 @@
 
 /**
  * FILE:layout.js
- * @short_description: The file responsible for managing Cinnamon chrome
+ * @short_description: The file responsible for managing Lemon chrome
  */
 const Clutter = imports.gi.Clutter;
 const Cinnamon = imports.gi.Cinnamon;
@@ -254,10 +254,10 @@ class UiActor extends St.Widget {
 /**
  * #LayoutManager
  *
- * @short_description: Manager of Cinnamon Chrome
+ * @short_description: Manager of Lemon Chrome
  *
  * Creates and manages the Chrome container which holds
- * all of the Cinnamon UI actors.
+ * all of the Lemon UI actors.
  */
 var LayoutManager = GObject.registerClass({
     Signals: {
@@ -677,7 +677,7 @@ var LayoutManager = GObject.registerClass({
     }
 });
 
-// This manages Cinnamon "chrome"; the UI that's visible in the
+// This manages Lemon "chrome"; the UI that's visible in the
 // normal mode (ie, outside the Overview), that surrounds the main
 // workspace content.
 const defaultParams = {

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Cinnamon (Wayland session)
+Name=Lemon (Wayland session)
 Comment=Window management and application launching
 Exec=cinnamon --replace
 X-GNOME-Bugzilla-Bugzilla=GNOME

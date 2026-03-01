@@ -135,7 +135,7 @@ class KeyringDialog extends ModalDialog.ModalDialog {
         // The above fail if e.g. unable to get input grab
         //
         // In an ideal world this wouldn't happen (because
-        // Cinnamon is in complete control of the session) but that's
+        // Lemon is in complete control of the session) but that's
         // just not how things work right now.
 
         log('keyringPrompt: Failed to show modal dialog.' +

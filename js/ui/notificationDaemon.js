@@ -143,7 +143,7 @@ NotificationDaemon.prototype = {
             if (appIcon.startsWith("file://")) {
                 return textureCache.load_uri_async(appIcon, size, size);
             } else {
-                // Cinnamon prefers symbolic icons due to theming. If an icon
+                // Lemon prefers symbolic icons due to theming. If an icon
                 // name is specified, try to load it in symbolic. If that fails,
                 // St reverts to fullcolor anyway.
                 return new St.Icon({ icon_name: appIcon,
@@ -282,7 +282,7 @@ NotificationDaemon.prototype = {
             hints[hint] = hints[hint].deep_unpack();
         }
 
-        // Special Cinnamon specific rewrites for message summaries on the fly.
+        // Special Lemon specific rewrites for message summaries on the fly.
         let rewrites = rewriteRules[appName];
         if (rewrites) {
             for (let i = 0; i < rewrites.length; i++) {

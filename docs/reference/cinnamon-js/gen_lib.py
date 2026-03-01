@@ -557,7 +557,7 @@ PROPERTIES_ITEM_FORMAT = '''
 '''
 
 ENUMS_FORMAT = '''
-<refsect1 id="CinnamonGlobal.other_details" role="details">
+<refsect1 id="LemonGlobal.other_details" role="details">
   <title role="details.title">Types and Values</title>
   {enums}
 </refsect1>

@@ -3,7 +3,7 @@
 /**
 * DOCINFO
 *
-* DocInfo is a JS layer on top of Cinnamon's DocSystem (which is written in C).
+* DocInfo is a JS layer on top of Lemon's DocSystem (which is written in C).
 *
 * The advantages of using DocInfo (rather than Gtk.RecentManager) are:
 *

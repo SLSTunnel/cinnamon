@@ -1,21 +1,21 @@
-Cinnamon is a Linux desktop that provides advanced innovative features and a traditional user experience.
+Lemon is a Linux desktop that provides advanced innovative features and a traditional user experience.
 
 The desktop layout is similar to GNOME 2 with underlying technology forked from the GNOME Shell.
-Cinnamon makes users feel at home with an easy-to-use and comfortable desktop experience.
+Lemon makes users feel at home with an easy-to-use and comfortable desktop experience.
 
 
 Installing via USB
 ==================
 
-You can run and install the Cinnamon desktop (via Linux Mint) from a USB
+You can run and install the Lemon desktop (via Linux Mint) from a USB
 drive by following these steps:
 
 **1. Download a Linux Mint ISO**
 
-Download the latest Linux Mint ISO that ships with Cinnamon from the official
+Download the latest Linux Mint ISO that ships with Lemon from the official
 website: https://linuxmint.com/download.php
 
-Choose the **Cinnamon** edition and select a mirror to download the ``.iso``
+Choose the **Lemon** edition and select a mirror to download the ``.iso``
 file.
 
 **2. Create a bootable USB drive**
@@ -55,10 +55,10 @@ be erased.
    ``F12``, ``F11``, ``Esc``, or ``Del`` during POST (the key shown briefly
    on screen at startup varies by manufacturer).
 3. Select the USB drive from the boot menu.
-4. Linux Mint will load a live desktop environment where you can try Cinnamon
+4. Linux Mint will load a live desktop environment where you can try Lemon
    without making any changes to your computer.
 
-**4. Install Cinnamon / Linux Mint**
+**4. Install Lemon / Linux Mint**
 
 1. Once the live desktop has loaded, double-click the
    **Install Linux Mint** icon on the desktop.
@@ -73,13 +73,13 @@ be erased.
 3. When installation is complete, restart the computer and remove the USB
    drive when prompted.
 
-After rebooting you will be greeted by the Cinnamon desktop.
+After rebooting you will be greeted by the Lemon desktop.
 
 Building a custom ISO
 =====================
 
 The script ``tools/build-iso.sh`` builds a bootable live ISO containing the
-Cinnamon desktop using `live-build <https://salsa.debian.org/live-team/live-build>`_.
+Lemon desktop using `live-build <https://salsa.debian.org/live-team/live-build>`_.
 
 **Requirements**
 
@@ -92,7 +92,7 @@ Cinnamon desktop using `live-build <https://salsa.debian.org/live-team/live-buil
 
     sudo ./tools/build-iso.sh
 
-The finished image is placed in ``build/iso/noble-cinnamon-amd64.iso``.
+The finished image is placed in ``build/iso/noble-lemon-amd64.iso``.
 
 **Options**
 
@@ -116,19 +116,19 @@ The script must be run as root (or via ``sudo``) because live-build chroots
 into the build environment.  A full build takes 20–40 minutes depending on
 network speed and host performance.
 
-Build logs are written to ``/tmp/cinnamon-iso-build.log``.
+Build logs are written to ``/tmp/lemon-iso-build.log``.
 
 Contributing
 ============
-Cinnamon is on GitHub at https://github.com/SLSTunnel/cinnamon.
+Lemon is on GitHub at https://github.com/SLSTunnel/cinnamon.
 
-Note that some issues may not be with Cinnamon itself. For a list of related components,
+Note that some issues may not be with Lemon itself. For a list of related components,
 please see https://projects.linuxmint.com/cinnamon/.
 
 
 Handling Windows, Android, and iOS files
 =========================================
-Cinnamon includes support for opening the following file types on Linux via
+Lemon includes support for opening the following file types on Linux via
 the ``cinnamon-file-handler`` utility:
 
 `.exe` – Windows executables
@@ -171,12 +171,12 @@ the ``cinnamon-file-handler`` utility:
 
 Auto-install uses ``pkexec`` for privilege escalation; a Polkit authentication
 dialog will appear before any package is installed.  None of these handlers
-modify existing Cinnamon flows or change the behaviour of already-supported
+modify existing Lemon flows or change the behaviour of already-supported
 file types.
 
 
 License
 =======
-Cinnamon is distributed under the terms of the GNU General Public License,
+Lemon is distributed under the terms of the GNU General Public License,
 version 2 or later. See the COPYING file for details.
 

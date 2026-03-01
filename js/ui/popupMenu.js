@@ -1761,7 +1761,7 @@ var PopupMenuBase = class PopupMenuBase {
      * @tab (string): the tab to launch
      *
      * Adds a #PopupMenuItem with label @title to the menu. When the item is
-     * clicked, Cinnamon Settings will be launched with the module @module
+     * clicked, Lemon Settings will be launched with the module @module
      * activated.
      *
      * Returns (PopupMenu.PopupMenuItem): the menu item created.

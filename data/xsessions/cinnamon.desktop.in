@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Cinnamon
-Comment=This session logs you into Cinnamon
+Name=Lemon
+Comment=This session logs you into Lemon
 Exec=cinnamon-session-cinnamon
 TryExec=@bindir@/cinnamon
 Icon=

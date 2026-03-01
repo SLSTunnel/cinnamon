@@ -1,6 +1,6 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
 //
-// powerUtils.js - Shared UPower utilities for Cinnamon
+// powerUtils.js - Shared UPower utilities for Lemon
 //
 // Common utility functions for working with UPower devices,
 // used by both the power applet and screensaver power widget.

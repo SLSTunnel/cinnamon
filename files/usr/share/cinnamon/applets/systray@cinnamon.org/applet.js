@@ -128,7 +128,7 @@ class CinnamonSystrayApplet extends Applet.Applet {
     _onBeforeRedisplay() {
         // Mark all icons as obsolete
         // There might still be pending delayed operations to insert/resize of them
-        // And that would crash Cinnamon
+        // And that would crash Lemon
         this._clearIcons();
     }
 

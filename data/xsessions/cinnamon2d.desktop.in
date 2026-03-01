@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Cinnamon (Software Rendering)
-Comment=This session logs you into Cinnamon (using software rendering)
+Name=Lemon (Software Rendering)
+Comment=This session logs you into Lemon (using software rendering)
 Exec=cinnamon-session-cinnamon2d
 TryExec=@bindir@/cinnamon2d
 Icon=

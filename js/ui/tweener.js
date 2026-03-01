@@ -31,7 +31,7 @@ const Tweener = imports.tweener.tweener;
 /**
  * init:
  *
- * Function called by main.js when Cinnamon starts
+ * Function called by main.js when Lemon starts
  */
 function init() {
     Tweener.setFrameTicker(new ClutterFrameTicker());

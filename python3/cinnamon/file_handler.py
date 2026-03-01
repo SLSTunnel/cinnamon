@@ -15,7 +15,7 @@ provides user-facing actions:
   .ipa  – explain iOS signing/device restrictions; offer to extract and show
           metadata (treated as ZIP).  Does not claim actual installation.
 
-None of the handlers modify existing Cinnamon flows.
+None of the handlers modify existing Lemon flows.
 """
 
 import os

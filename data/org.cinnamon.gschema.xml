@@ -15,7 +15,7 @@
       <default>[]</default>
       <summary>Uuids of extensions to enable</summary>
       <description>
-        Cinnamon extensions have a uuid property; this key lists extensions
+        Lemon extensions have a uuid property; this key lists extensions
         which should be loaded.  disabled-extensions overrides this setting for
         extensions that appear in both lists. Append ! in front of uuid to
         override version check
@@ -51,7 +51,7 @@
       <default>['panel1:left:0:menu@cinnamon.org', 'panel1:left:1:separator@cinnamon.org', 'panel1:left:2:grouped-window-list@cinnamon.org', 'panel1:right:0:systray@cinnamon.org', 'panel1:right:1:xapp-status@cinnamon.org', 'panel1:right:2:notifications@cinnamon.org', 'panel1:right:3:printers@cinnamon.org', 'panel1:right:4:removable-drives@cinnamon.org', 'panel1:right:5:keyboard@cinnamon.org', 'panel1:right:6:favorites@cinnamon.org', 'panel1:right:7:network@cinnamon.org', 'panel1:right:8:sound@cinnamon.org', 'panel1:right:9:power@cinnamon.org', 'panel1:right:10:calendar@cinnamon.org', 'panel1:right:11:cornerbar@cinnamon.org']</default>
       <summary>Uuids of applets to enable</summary>
       <description>
-        Cinnamon applets have a uuid property; this key lists applets
+        Lemon applets have a uuid property; this key lists applets
         which should be loaded. Append ! in front of uuid to override version
         check.
       </description>
@@ -80,7 +80,7 @@
       <default>[]</default>
       <summary>Uuids of desklets to enable</summary>
       <description>
-        Cinnamon desklets have a uuid property; this key lists desklets
+        Lemon desklets have a uuid property; this key lists desklets
         which should be loaded. uuids should be put in the form uuid:id:x:y, where id is used to distinguish between multiple instances of the same desklet. Append ! in front of uuid to override version check.
       </description>
     </key>
@@ -96,7 +96,7 @@
       <default>[]</default>
       <summary>Uuids of search providers to enable</summary>
       <description>
-        Cinnamon search providers have a uuid property; this key lists search providers
+        Lemon search providers have a uuid property; this key lists search providers
         which should be loaded.
       </description>
     </key>
@@ -181,7 +181,7 @@
       <default>false</default>
       <summary>(Deprecated) Scale panel applet text and icons</summary>
       <description>
-        (Deprecated) Retained to avoid applets who read the property from crashing Cinnamon
+        (Deprecated) Retained to avoid applets who read the property from crashing Lemon
       </description>
     </key>
 
@@ -203,7 +203,7 @@
 
     <key name="desktop-effects-workspace" type="b">
       <default>true</default>
-      <summary>Enable desktop effects in the Cinnamon ui</summary>
+      <summary>Enable desktop effects in the Lemon ui</summary>
       <description>
         This affects switching workspaces, expo and scale.
       </description>
@@ -321,7 +321,7 @@
       <default>true</default>
       <summary>Whether to collect stats about applications usage</summary>
       <description>
-        Cinnamon normally monitors active applications in order to present
+        Lemon normally monitors active applications in order to present
         the most used ones (e.g. in launchers). While this data will be
         kept private, you may want to disable this for privacy reasons.
         Please note that doing so won't remove already saved data.
@@ -503,7 +503,7 @@
 
     <key type="b" name="allow-other-notification-handlers">
       <default>false</default>
-      <summary>If true, Cinnamon will no longer attempt to be the session notification handler.</summary>
+      <summary>If true, Lemon will no longer attempt to be the session notification handler.</summary>
     </key>
 
     <key type="s" name="system-icon">
@@ -524,13 +524,13 @@
     <key type="b" name="internal-screensaver-enabled">
       <default>true</default>
       <summary>Use internal screensaver implementation. Requires cinnamon restart if changed.</summary>
-      <description>If true, use Cinnamon's internal screensaver for locking instead of the external cinnamon-screensaver daemon.</description>
+      <description>If true, use Lemon's internal screensaver for locking instead of the external cinnamon-screensaver daemon.</description>
     </key>
 
     <key type="b" name="session-locked-state">
       <default>false</default>
       <summary>Whether the session is currently locked</summary>
-      <description>Persists the screensaver locked state so it can be restored after a Cinnamon restart. This key is managed internally and should not be modified manually.</description>
+      <description>Persists the screensaver locked state so it can be restored after a Lemon restart. This key is managed internally and should not be modified manually.</description>
     </key>
 
     <key type="b" name="debug-screensaver">
@@ -548,7 +548,7 @@
 
     <key name="enable-vfade" type="b">
       <default>true</default>
-      <summary>Enable the fade effect in Cinnamon scrollviews</summary>
+      <summary>Enable the fade effect in Lemon scrollviews</summary>
       <description>
         Whether the vfade effect is enabled or not
       </description>
@@ -678,7 +678,7 @@
       <summary>Framerate used for recording screencasts.</summary>
       <description>
         The framerate of the resulting screencast recordered
-        by Cinnamon's screencast recorder in frames-per-second.
+        by Lemon's screencast recorder in frames-per-second.
       </description>
     </key>
     <key name="pipeline" type="s">
@@ -993,7 +993,7 @@
 
     <key name="memory-limit-enabled" type="b">
       <default>true</default>
-      <summary>Whether to restart Cinnamon when it reachs the memory limit</summary>
+      <summary>Whether to restart Lemon when it reaches the memory limit</summary>
       <description></description>
     </key>
 

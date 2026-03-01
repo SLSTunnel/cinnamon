@@ -148,7 +148,7 @@
         Type in the command <code>cinnamon-xlet-makepot -i</code> to install the existing translations (i.e. the <code>.po</code> files)
       </listitem>
       <listitem>
-        Restart Cinnamon: <code>CTRL+ALT+ESC</code>
+        Restart Lemon: <code>CTRL+ALT+ESC</code>
       </listitem>
     </itemizedlist>
     <para>
@@ -162,7 +162,7 @@
         Type in the command <code>cinnamon-xlet-makepot -r</code> to remove the installed translations.
       </listitem>
       <listitem>
-        Restart Cinnamon: <code>CTRL+ALT+ESC</code>
+        Restart Lemon: <code>CTRL+ALT+ESC</code>
       </listitem>
     </itemizedlist>
   </sect2>

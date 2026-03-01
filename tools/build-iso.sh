@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build-iso.sh – Build a bootable live ISO containing the Cinnamon desktop.
+# build-iso.sh – Build a bootable live ISO containing the Lemon desktop.
 #
 # Requirements
 # ------------
@@ -15,7 +15,7 @@
 #   --output Directory where the finished .iso is placed (default: build/iso)
 #
 # The finished image is written to:
-#   <output>/<suite>-cinnamon-<arch>.iso
+#   <output>/<suite>-lemon-<arch>.iso
 #
 # NOTE: live-build must be run as root (or via sudo) because it chroots into
 #       the build environment.
@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-ISO_NAME="${SUITE}-cinnamon-${ARCH}.iso"
+ISO_NAME="${SUITE}-lemon-${ARCH}.iso"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -73,7 +73,7 @@ require_cmd debootstrap "apt-get install debootstrap"
 # ---------------------------------------------------------------------------
 # Prepare build directory
 # ---------------------------------------------------------------------------
-BUILD_DIR="$(mktemp -d /tmp/cinnamon-iso-XXXXXX)"
+BUILD_DIR="$(mktemp -d /tmp/lemon-iso-XXXXXX)"
 trap 'log "Cleaning up $BUILD_DIR"; rm -rf "$BUILD_DIR"' EXIT
 
 log "Build directory : $BUILD_DIR"
@@ -95,17 +95,17 @@ lb config \
     --archive-areas "main restricted universe multiverse" \
     --apt-recommends true \
     --bootappend-live "boot=live components quiet splash" \
-    --iso-application "Cinnamon Desktop Live" \
+    --iso-application "Lemon Desktop Live" \
     --iso-publisher   "SLSTunnel/cinnamon" \
-    --iso-volume      "CINNAMON_LIVE"
+    --iso-volume      "LEMON_LIVE"
 
 # ---------------------------------------------------------------------------
 # Package lists
 # ---------------------------------------------------------------------------
 mkdir -p config/package-lists
 
-cat > config/package-lists/cinnamon.list.chroot <<'EOF'
-# Cinnamon desktop and essentials
+cat > config/package-lists/lemon.list.chroot <<'EOF'
+# Lemon desktop and essentials
 cinnamon
 cinnamon-core
 nemo
@@ -152,11 +152,11 @@ EOF
 # Build
 # ---------------------------------------------------------------------------
 log "Starting live-build (this may take 20-40 minutes)…"
-lb build 2>&1 | tee /tmp/cinnamon-iso-build.log
+lb build 2>&1 | tee /tmp/lemon-iso-build.log
 
 # live-build writes the ISO as live-image-*.hybrid.iso in the build dir
 BUILT_ISO="$(ls "${BUILD_DIR}"/live-image-*.hybrid.iso 2>/dev/null | head -1)"
-[[ -n "$BUILT_ISO" ]] || die "live-build did not produce an ISO. See /tmp/cinnamon-iso-build.log"
+[[ -n "$BUILT_ISO" ]] || die "live-build did not produce an ISO. See /tmp/lemon-iso-build.log"
 
 # ---------------------------------------------------------------------------
 # Copy to output directory

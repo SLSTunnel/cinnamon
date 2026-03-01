@@ -54,7 +54,7 @@ class AlbumArtWidget extends ScreensaverWidget.ScreensaverWidget {
         this._coverLoadHandle = 0;
 
         if (this._allowMediaControl) {
-            this._volumeControl = new Cvc.MixerControl({ name: 'Cinnamon Screensaver' });
+            this._volumeControl = new Cvc.MixerControl({ name: 'Lemon Screensaver' });
             this._volumeNorm = this._volumeControl.get_vol_max_norm();
             this._outputStream = null;
             this._outputVolumeId = 0;

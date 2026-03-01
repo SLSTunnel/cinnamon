@@ -1,7 +1,7 @@
 // -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
 /**
  * FILE:main.js
- * @short_description: This is the heart of Cinnamon, the mother of everything.
+ * @short_description: This is the heart of Lemon, the mother of everything.
  * @placesManager (PlacesManager.PlacesManager): The places manager
  * @overview (Overview.Overview): The "scale" overview
  * @expo (Expo.Expo): The "expo" overview
@@ -27,7 +27,7 @@
  * @layoutManager (Layout.LayoutManager): The layout manager.
  * @monitorLabeler (MonitorLabeler.MonitorLabeler): Adds labels to each monitor when configuring displays.
  * \
- * All actors that are part of the Cinnamon UI ar handled by the layout
+ * All actors that are part of the Lemon UI ar handled by the layout
  * manager, which will determine when to show and hide the actors etc.
  *
  * @panelManager (Panel.PanelManager): The panel manager.
@@ -43,7 +43,7 @@
  * manager.
  * \
  * This listens to changes in the GNOME background settings and mirrors them to
- * the Cinnamon settings, since many applications have a "Set background"
+ * the Lemon settings, since many applications have a "Set background"
  * button that modifies the GNOME background settings.
  *
  * @slideshowManager (SlideshowManager.SlideshowManager): The slideshow manager.
@@ -72,9 +72,9 @@
  * @xlet_startup_error (boolean): Whether there was at least one xlet that did
  * not manage to load
  *
- * The main file is responsible for launching Cinnamon as well as creating its
+ * The main file is responsible for launching Lemon as well as creating its
  * components. The C part of cinnamon calls the @start() function, which then
- * initializes all of cinnamon. Most components of Cinnamon can be accessed
+ * initializes all of lemon. Most components of Lemon can be accessed
  * through main.
  */
 
@@ -315,7 +315,7 @@ function start() {
 
     let cinnamonStartTime = new Date().getTime();
 
-    log(`About to start Cinnamon (${Meta.is_wayland_compositor() ? "Wayland" : "X11"} backend)`);
+    log(`About to start Lemon (${Meta.is_wayland_compositor() ? "Wayland" : "X11"} backend)`);
 
     let backend = Meta.get_backend();
 
@@ -324,7 +324,7 @@ function start() {
     let live = false;
 
     if (!backend.is_rendering_hardware_accelerated() || cinnamon_2d) {
-        global.logError("Cinnamon Software Rendering mode enabled");
+        global.logError("Lemon Software Rendering mode enabled");
         software_rendering = true;
 
         // We only warn if software_rendering is not of the user's volition.
@@ -504,7 +504,7 @@ function start() {
     global.stage.connect('captured-event', _stageEventHandler);
 
     global.log('loaded at ' + _startDate);
-    log('Cinnamon started at ' + _startDate);
+    log('Lemon started at ' + _startDate);
 
     wmSettings = new Gio.Settings({schema_id: "org.cinnamon.desktop.wm.preferences"})
     workspace_names = wmSettings.get_strv("workspace-names");
@@ -597,14 +597,14 @@ function start() {
         if (do_login_sound && !global.session_running)
 		    soundManager.play('login');
 
-        // Disable panel edit mode when Cinnamon starts
+        // Disable panel edit mode when Lemon starts
         if (global.settings.get_boolean("panel-edit-mode")) {
             global.settings.set_boolean("panel-edit-mode", false);
         }
 
         global.connect('shutdown', do_shutdown_sequence);
 
-        global.log('Cinnamon took %d ms to start'.format(new Date().getTime() - cinnamonStartTime));
+        global.log('Lemon took %d ms to start'.format(new Date().getTime() - cinnamonStartTime));
     }).catch(error => {
         global.logError(`promise failed: ${error}`);
     });
@@ -642,10 +642,10 @@ function notifyXletStartupError() {
     let icon = new St.Icon({ icon_name: 'dialog-warning',
                              icon_type: St.IconType.FULLCOLOR,
                              icon_size: 36 });
-    warningNotify(_("Problems during Cinnamon startup"),
-                  _("Cinnamon started successfully, but one or more applets, desklets or extensions failed to load.\n\n") +
-                  _("Check your system log and the Cinnamon LookingGlass log for any issues.  ") +
-                  _("You can disable the offending extension(s) in Cinnamon Settings to prevent this message from recurring.  ") +
+    warningNotify(_("Problems during Lemon startup"),
+                  _("Lemon started successfully, but one or more applets, desklets or extensions failed to load.\n\n") +
+                  _("Check your system log and the Lemon LookingGlass log for any issues.  ") +
+                  _("You can disable the offending extension(s) in Lemon Settings to prevent this message from recurring.  ") +
                   _("Please contact the developer."), icon);
 
 }
@@ -794,7 +794,7 @@ function moveWindowToNewWorkspace(metaWindow, switchToNewWorkspace) {
 /**
  * getThemeStylesheet:
  *
- * Get the theme CSS file that Cinnamon will load
+ * Get the theme CSS file that Lemon will load
  *
  * Returns (string): A file path that contains the theme CSS,
  *                   null if using the default
@@ -809,7 +809,7 @@ function getThemeStylesheet()
  * @cssStylesheet (string): A file path that contains the theme CSS,
  *                         set it to null to use the default
  *
- * Set the theme CSS file that Cinnamon will load
+ * Set the theme CSS file that Lemon will load
  */
 function setThemeStylesheet(cssStylesheet)
 {
@@ -1686,7 +1686,7 @@ function getTabList(workspaceOpt) {
 
 function restartCinnamon(showOsd = false) {
     if (Meta.is_wayland_compositor()) {
-        global.logWarning("Cinnamon restart not supported with Wayland");
+        global.logWarning("Lemon restart not supported with Wayland");
         return;
     }
     global.display.connect("show-restart-message", () => {

@@ -556,7 +556,7 @@ var ScreenShield = GObject.registerClass({
 
         if (shouldInhibit && !this._inhibitor) {
             _log('ScreenShield: Acquiring sleep inhibitor');
-            this._loginManager.inhibit('Cinnamon needs to lock the screen', (inhibitor) => {
+            this._loginManager.inhibit('Lemon needs to lock the screen', (inhibitor) => {
                 if (!inhibitor) {
                     global.logWarning('ScreenShield: Failed to acquire sleep inhibitor');
                     return;

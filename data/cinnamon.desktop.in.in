@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Cinnamon
+Name=Lemon
 Comment=Window management and application launching
 Exec=@bindir@/cinnamon-launcher
 X-GNOME-Bugzilla-Bugzilla=GNOME

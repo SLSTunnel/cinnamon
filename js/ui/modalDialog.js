@@ -40,7 +40,7 @@ var State = {
  * @contentLayout (St.BoxLayout): The box containing the contents of the modal
  * dialog (excluding the buttons)
  *
- * The #ModalDialog object is a generic popup dialog in Cinnamon. It can either
+ * The #ModalDialog object is a generic popup dialog in Lemon. It can either
  * be created directly and then manipulated afterwards, or used as a base class
  * for more sophisticated modal dialog.
  *
@@ -62,7 +62,7 @@ var ModalDialog = GObject.registerClass({
      * _init:
      * @params (JSON): parameters for the modal dialog. Options include
      * @cinnamonReactive, which determines whether the modal dialog should
-     * block Cinnamon input, and @styleClass, which is the style class the
+     * block Lemon input, and @styleClass, which is the style class the
      * modal dialog should use.
      */
     _init(params) {

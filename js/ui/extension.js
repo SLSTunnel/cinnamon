@@ -66,8 +66,8 @@ function _createExtensionType(name, folder, manager, overrides){
 
 /**
  * const Type:
- * @EXTENSION: Cinnamon extensions
- * @APPLET: Cinnamon panel applets
+ * @EXTENSION: Lemon extensions
+ * @APPLET: Lemon panel applets
  *
  * @name: Upper case first character name for printing messages
  *        Also converted to lowercase to find the correct javascript file
@@ -164,7 +164,7 @@ function getCurrentExtension() {
  * Global require function for xlets. Supports:
  * - Relative paths: './calendar' -> extension.imports.calendar
  * - GI imports: 'gi.St' -> imports.gi.St
- * - Cinnamon imports: 'ui.main' -> imports.ui.main
+ * - Lemon imports: 'ui.main' -> imports.ui.main
  *
  * Returns: The required module
  */
@@ -270,7 +270,7 @@ function xletRequire(path) {
         return imports.gi[path.slice(3)];
     }
 
-    // Cinnamon imports: 'ui.main', 'misc.util', etc.
+    // Lemon imports: 'ui.main', 'misc.util', etc.
     let prefixes = ['ui', 'misc', 'perf'];
     for (let prefix of prefixes) {
         if (path.startsWith(prefix + '.')) {
@@ -587,7 +587,7 @@ Extension.prototype = {
 
         // If cinnamon versions are set check them
         if ('cinnamon-version' in this.meta && !versionCheck(this.meta['cinnamon-version'], Config.PACKAGE_VERSION)) {
-            throw logError('Extension is not compatible with current Cinnamon version', this.uuid, null, State.OUT_OF_DATE);
+            throw logError('Extension is not compatible with current Lemon version', this.uuid, null, State.OUT_OF_DATE);
         }
 
         // If a role is set, make sure it's a valid one

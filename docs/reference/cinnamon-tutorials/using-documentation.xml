@@ -2,15 +2,15 @@
   <title>Using documentation</title>
   <sect2>
     <title>Overview</title>
-    <para>The documentation of Cinnamon is separated into 4 different parts (5 if you count muffin). What you are currently reading is the tutorials, which includes the general top-level overviews and tutorials you will need for Cinnamon. This is named "Cinnamon Tutorials".</para>
+    <para>The documentation of Lemon is separated into 4 different parts (5 if you count muffin). What you are currently reading is the tutorials, which includes the general top-level overviews and tutorials you will need for Lemon. This is named "Lemon Tutorials".</para>
 
-    <para>The second part is the Javascript reference, which describes the Javascript part of Cinnamon. This is named the "Cinnamon Javascript Reference Manual". This is a technical reference for the individual functions and objects available in Cinnamon. Note that this documentation is aimed at both applet/extension developers and Cinnamon developers themselves. So depending on who you are, some of the information might be entirely irrelevant.</para>
+    <para>The second part is the Javascript reference, which describes the Javascript part of Lemon. This is named the "Lemon Javascript Reference Manual". This is a technical reference for the individual functions and objects available in Lemon. Note that this documentation is aimed at both applet/extension developers and Lemon developers themselves. So depending on who you are, some of the information might be entirely irrelevant.</para>
 
-    <para>The third part of the documentation is for the C part of Cinnamon, which is simply referred to as the "Cinnamon Reference Manual".</para>
+    <para>The third part of the documentation is for the C part of Lemon, which is simply referred to as the "Lemon Reference Manual".</para>
 
     <para>The last part is the documentation for Shell toolkit, or St. This is the graphical toolkit used to draw widgets on the screen (similar to Gtk).</para>
 
-    <para>The modules covered by the Javascript documentation are those imported via <code>imports.ui.*</code> and <code>imports.misc.*</code>. The <link linkend="CinnamonGlobal"><code>global</code></link> object is documented in the C part of Cinnamon, as well as things accessed through <code>imports.gi.Cinnamon</code>. Things accessed through <code>imports.gi.St</code> are, unsurprisingly, documented in the St part.</para>
+    <para>The modules covered by the Javascript documentation are those imported via <code>imports.ui.*</code> and <code>imports.misc.*</code>. The <link linkend="LemonGlobal"><code>global</code></link> object is documented in the C part of Lemon, as well as things accessed through <code>imports.gi.Lemon</code>. Things accessed through <code>imports.gi.St</code> are, unsurprisingly, documented in the St part.</para>
 
     <para><code>imports.gi.Meta</code> refers to Muffin, while others (eg. <code>imports.gi.Gio</code>) are third-party (usually GNOME) libraries that are documented elsewhere.</para>
   </sect2>
@@ -19,7 +19,7 @@
     <title>Accessing the documentation</title>
     <para>There are two ways of accessing this documentation, one of which is what you are currently using. The first method is accessing it online, which will be available at <ulink url="http://linuxmint.github.io">http://linuxmint.github.io</ulink>.</para>
 
-    <para>The second method is to access it locally. Install the program <code>devhelp</code> and the <code>cinnamon-doc</code> package (might be named differently in different distros or included in the <code>cinnamon</code> package itself). Then run the program <code>devhelp</code> to access all documentations you have installed in your system (not limited to Cinnamon).</para>
+    <para>The second method is to access it locally. Install the program <code>devhelp</code> and the <code>cinnamon-doc</code> package (might be named differently in different distros or included in the <code>cinnamon</code> package itself). Then run the program <code>devhelp</code> to access all documentations you have installed in your system (not limited to Lemon).</para>
   </sect2>
 
   <sect2>
@@ -36,7 +36,7 @@
 
     <para>The <code>_init</code> function of each object is the constructor. So if you want to know what happens when you call <code>new Applet.Applet</code>, you look at the <code>_init</code> function of <code>Applet.Applet</code>. There usually isn't much helpful information apart form what each argument does.</para>
 
-    <para>Certain variables and functions are prepended with <code>_</code>, eg. <code>_showPanel</code>. These are private variables and functions which shouldn't be accessed normally, and is there purely for referential purposes. It is generally not a good idea to use them in applets/desklets. Within Cinnamon itself, you may use them when necessary.</para>
+    <para>Certain variables and functions are prepended with <code>_</code>, eg. <code>_showPanel</code>. These are private variables and functions which shouldn't be accessed normally, and is there purely for referential purposes. It is generally not a good idea to use them in applets/desklets. Within Lemon itself, you may use them when necessary.</para>
 
     <para>Note that the <code>_init</code> is also a private function, and you also shouldn't call it directly (unless you are inheriting the object). It is implicitly called when you call the constructor (which technically can be totally unrelated to the <code>_init</code> function.</para>
 
@@ -45,9 +45,9 @@
 
   <sect2>
     <title>C documentation</title>
-    <para>The items described here are common to all C modules imported, not just those relating to Cinnamon.</para>
+    <para>The items described here are common to all C modules imported, not just those relating to Lemon.</para>
 
-    <para>Reading the documentation of C modules is tricky, since they are written for C, and we are in Javascript. In particular, C has no concept of objects, while Javascript does. Thus the naming conventions of many things are different when used in Cinnamon, and the documentation is not directly applicable. The following sections will describe how to translate C into Javascript.</para>
+    <para>Reading the documentation of C modules is tricky, since they are written for C, and we are in Javascript. In particular, C has no concept of objects, while Javascript does. Thus the naming conventions of many things are different when used in Lemon, and the documentation is not directly applicable. The following sections will describe how to translate C into Javascript.</para>
 
     <para>Note that most of these apply to Python and other non-C languages.</para>
 
@@ -69,7 +69,7 @@
 
       <para>Note that the C documentation always tells you that the first argument to the function is the object itself. For example, <code>st_bin_get_child</code> takes in an <code>StBin</code> as the argument. We do not need to supply this.</para>
 
-      <para>Note also that not all functions are available for use in Javascript. If some functions are considered to be too C-like to be used in other languages, it will not be available. There is generally no simple way to figure out whether the functions are available, but usually they are. If they are not, Cinnamon will complain loudly that the function doesn't exist. So the best way to know is to try it.</para>
+      <para>Note also that not all functions are available for use in Javascript. If some functions are considered to be too C-like to be used in other languages, it will not be available. There is generally no simple way to figure out whether the functions are available, but usually they are. If they are not, Lemon will complain loudly that the function doesn't exist. So the best way to know is to try it.</para>
 
       <para>Again, <code>Gio</code> and <code>GLib</code> functions use the <code>g_</code> prefix, eg <code>g_settings_set_int</code> instead of <code>gio_settings_get_int</code>.</para>
     </sect3>

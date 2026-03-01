@@ -35,7 +35,7 @@ const ScreenSaverInfo = Gio.DBusInterfaceInfo.new_for_xml(ScreenSaverIface);
  * Implements the org.cinnamon.ScreenSaver DBus interface.
  * Routes calls to the internal screensaver (this._screenShield).
  *
- * Note: If internal-screensaver-enabled is false, Cinnamon must be restarted
+ * Note: If internal-screensaver-enabled is false, Lemon must be restarted
  * to allow the external cinnamon-screensaver daemon to claim the bus name.
  */
 var ScreenSaverService = class ScreenSaverService {
@@ -93,7 +93,7 @@ var ScreenSaverService = class ScreenSaverService {
     }
 
     QuitAsync(params, invocation) {
-        // No-op for internal screensaver (can't quit Cinnamon's built-in screen shield).
+        // No-op for internal screensaver (can't quit Lemon's built-in screen shield).
         // Exists for compatibility with legacy cinnamon-screensaver-command --exit.
         invocation.return_value(null);
     }

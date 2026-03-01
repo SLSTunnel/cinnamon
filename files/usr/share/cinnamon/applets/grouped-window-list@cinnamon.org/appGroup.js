@@ -496,7 +496,7 @@ var AppGroup = class AppGroup {
             this.label.allocate(childBox, flags);
         }
 
-        // Call set_icon_geometry for support of Cinnamon's minimize animation
+        // Call set_icon_geometry for support of Lemon's minimize animation
         if (this.groupState.metaWindows.length > 0 && this.actor.realized) {
             const rect = new Meta.Rectangle();
             [rect.x, rect.y] = this.actor.get_transformed_position();

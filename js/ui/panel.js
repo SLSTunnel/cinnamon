@@ -320,7 +320,7 @@ function updatePanelsMeta(meta, panel_props) {
 /**
  * #PanelManager
  *
- * @short_description: Manager of Cinnamon panels
+ * @short_description: Manager of Lemon panels
  *
  * #PanelManager creates panels and startup and
  * provides methods for easier access of panels
@@ -1407,7 +1407,7 @@ PanelContextMenu.prototype = {
         menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem()); // separator line
 
         menu.troubleshootItem = new PopupMenu.PopupSubMenuMenuItem(_("Troubleshoot"));
-        menu.troubleshootItem.menu.addAction(_("Restart Cinnamon"), function(event) {
+        menu.troubleshootItem.menu.addAction(_("Restart Lemon"), function(event) {
             Main.restartCinnamon(true);
         });
 

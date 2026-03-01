@@ -857,8 +857,8 @@ class GroupedWindowListApplet extends Applet.Applet {
         return DND.DragMotionResult.MOVE_DROP;
     }
 
-    // TODO: Figure out exactly which properties on this applet constructor the Cinnamon APIs needs for all modes of
-    // DND, so we can kill the _delegate reference. Long term, a PR to Cinnamon should be opened fixing circular
+    // TODO: Figure out exactly which properties on this applet constructor the Lemon APIs needs for all modes of
+    // DND, so we can kill the _delegate reference. Long term, a PR to Lemon should be opened fixing circular
     // object reference structures for the applet and desklet classes.
     acceptDrop(source, actor) {
         if (!this.state.settings.enableDragging || this.state.panelEditMode)
@@ -919,7 +919,7 @@ class GroupedWindowListApplet extends Applet.Applet {
             currentWorkspace.updateAppGroupIndexes();
 
             // Refresh the group's thumbnails so hoverMenu is aware of the position change
-            // In the case of dragging a group that has a delay before Cinnamon can grab its
+            // In the case of dragging a group that has a delay before Lemon can grab its
             // thumbnail texture, e.g., LibreOffice, defer the refresh.
             if (source.groupState.metaWindows.length > 0) {
                 setTimeout(() => source.groupState.trigger('windowCount'), 0);

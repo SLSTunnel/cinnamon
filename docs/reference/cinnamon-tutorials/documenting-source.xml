@@ -1,7 +1,7 @@
 <chapter id="documenting-source">
   <title>Writing documentation in source</title>
   <para>
-    The C part of Cinnamon can be documented using standard gtk-doc format, and there should be plenty of tutorials on that. The JavaScript part of Cinnamon can also be documented using something that resembles gtk-doc format.
+    The C part of Lemon can be documented using standard gtk-doc format, and there should be plenty of tutorials on that. The JavaScript part of Lemon can also be documented using something that resembles gtk-doc format.
   </para>
 
   <para> Currently, we support documenting files (eg. <code>main.js</code>), objects (eg. <code>Applet.Applet</code>), functions (including functions of files and functions of objects), signals and enums.  </para>

@@ -161,9 +161,9 @@ var Applet = class Applet {
 
         this.panel = null;
         this._order = 0;        // Defined in gsettings, this is the order of the applet within a panel location.
-                                // This value is set by Cinnamon when loading/listening_to gsettings.
+                                // This value is set by Lemon when loading/listening_to gsettings.
         this._newOrder = null;      //  Used when moving an applet
-        this._panelLocation = null;     // Backlink to the panel location our applet is in, set by Cinnamon.
+        this._panelLocation = null;     // Backlink to the panel location our applet is in, set by Lemon.
         this.locationLabel = 'right';
         this._newPanelId = null;  //  Used when moving an applet
         this._newPanelLocation = null;  //  Used when moving an applet
@@ -173,7 +173,7 @@ var Applet = class Applet {
         this._iconSize = null;
 
         this.instance_id = instance_id; // Needed by appletSettings
-        this._uuid = null;      // Defined in gsettings, set by Cinnamon.
+        this._uuid = null;      // Defined in gsettings, set by Lemon.
         this._meta = null;      // set by appletManager
         this._dragging = false;
         this._draggable = DND.makeDraggable(this.actor);
@@ -191,7 +191,7 @@ var Applet = class Applet {
             this._setAppletReactivity();
         }));
 
-        // FIXME: Cinnamon should be providing a sandbox environment for extensions, and not depend on data passed
+        // FIXME: Lemon should be providing a sandbox environment for extensions, and not depend on data passed
         // from the extension for basic state that we are already keeping track of in appletManager. Since applets
         // need icon sizes available immediately in their constructor, this has to stay for now.
         if (instance_id) {

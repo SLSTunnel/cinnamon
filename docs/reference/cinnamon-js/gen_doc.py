@@ -269,7 +269,7 @@ for _file in _files:
             bracket_count += line.count('{') - line.count('}')
 
             if bracket_count == 0:
-                # Cinnamon-style objects and Lang.Class objects
+                # Lemon-style objects and Lang.Class objects
                 if curr_obj.orig_name + '.prototype' in scope or \
                    re.match(curr_obj.orig_name + r'\s*=\s*Lang\.Class', scope):
                     curr_obj = curr_file

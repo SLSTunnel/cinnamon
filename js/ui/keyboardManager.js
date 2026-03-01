@@ -699,8 +699,8 @@ var InputSourceManager = class {
         }
 
         if (infosList.length == 0) {
-            // If only an ibus source is defined at Cinnamon startup, ibus won't be loaded yet, pending
-            // a callback. We need to provide something temporarily to allow Cinnamon to finish initializine.
+            // If only an ibus source is defined at Lemon startup, ibus won't be loaded yet, pending
+            // a callback. We need to provide something temporarily to allow Lemon to finish initializing.
             // Once ibus is loaded, _inputSourcesChanged will be called again.
             let [exists, displayName, shortName, xkbLayout, variant] =
                     this._xkbInfo.get_layout_info(DEFAULT_LAYOUT);

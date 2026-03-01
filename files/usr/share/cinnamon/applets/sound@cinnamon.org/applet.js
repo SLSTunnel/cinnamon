@@ -1014,7 +1014,7 @@ class CinnamonSoundApplet extends Applet.TextIconApplet {
             this._addPlayer(mprisPlayer);
         }
 
-        this._control = new Cvc.MixerControl({ name: 'Cinnamon Volume Control' });
+        this._control = new Cvc.MixerControl({ name: 'Lemon Volume Control' });
         this._control.connect('state-changed', (...args) => this._onControlStateChanged(...args));
 
         this._control.connect('output-added', (...args) => this._onDeviceAdded(...args, "output"));

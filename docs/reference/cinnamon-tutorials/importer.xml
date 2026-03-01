@@ -3,7 +3,7 @@
   <para>To access code of other JavaScript files, cjs has the <code>imports</code> object.</para>
 
   <para>
-    In cjs in combination with Cinnamon you can use following statements to import statements:
+    In cjs in combination with Lemon you can use following statements to import statements:
 
     <informalexample>
       <programlisting>
@@ -83,7 +83,7 @@
   <sect2>
     <title><code>imports.gi.*</code></title>
 
-    <para>As Cinnamon uses C libraries like Clutter, Muffin and more, there is a little problem: How can those libraries be used in cjs?</para>
+    <para>As Lemon uses C libraries like Clutter, Muffin and more, there is a little problem: How can those libraries be used in cjs?</para>
 
     <para>
       For this, there is <ulink role="online-location" url="https://wiki.gnome.org/Projects/GObjectIntrospection">GObject Introspection</ulink>.
@@ -94,8 +94,8 @@
       C libraries are included like this:
       <informalexample>
         <programlisting>
-          const St = imports.gi.St; //Shell Toolkit, the normal way to display widgets on the Cinnamon screen
-          const Cinnamon = imports.gi.Cinnamon; //Cinnamon C libraries, e.g. AppSystem
+          const St = imports.gi.St; //Shell Toolkit, the normal way to display widgets on the Lemon screen
+          const Lemon = imports.gi.Lemon; //Lemon C libraries, e.g. AppSystem
         </programlisting>
       </informalexample>
     </para>
@@ -106,7 +106,7 @@
   <sect2>
     <title><code>imports.ui.*</code></title>
 
-    <para>Those imports under <code>imports.ui.*</code> are core Cinnamon modules.</para>
+    <para>Those imports under <code>imports.ui.*</code> are core Lemon modules.</para>
 
     <para>
       Some important modules:
@@ -124,7 +124,7 @@
   <sect2>
     <title><code>imports.misc.*</code></title>
 
-    <para>Those imports under <code>imports.misc.*</code> belong to Cinnamon, but aren't tied to it as much as <code>imports.ui.*</code>.</para>
+    <para>Those imports under <code>imports.misc.*</code> belong to Lemon, but aren't tied to it as much as <code>imports.ui.*</code>.</para>
 
     <para>
       <informalexample>
@@ -176,19 +176,19 @@
       </para>
     </para>
     <para>
-      In Cinnamon 3.6+, there is now a simpler way to import files using <code>require</code>. This method is not compatible with previous versions of Cinnamon.
+      In Lemon 3.6+, there is now a simpler way to import files using <code>require</code>. This method is not compatible with previous versions of Lemon.
 
       <para>
         Importing GI modules:
         <informalexample>
           <programlisting>
-            const Cinnamon = require('gi.Cinnamon');
+            const Lemon = require('gi.Lemon');
           </programlisting>
         </informalexample>
       </para>
 
       <para>
-        Importing Cinnamon modules:
+        Importing Lemon modules:
         <informalexample>
           <programlisting>
             const DND = require('ui.dnd');
