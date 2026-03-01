@@ -4,6 +4,77 @@ The desktop layout is similar to GNOME 2 with underlying technology forked from 
 Cinnamon makes users feel at home with an easy-to-use and comfortable desktop experience.
 
 
+Installing via USB
+==================
+
+You can run and install the Cinnamon desktop (via Linux Mint) from a USB
+drive by following these steps:
+
+**1. Download a Linux Mint ISO**
+
+Download the latest Linux Mint ISO that ships with Cinnamon from the official
+website: https://linuxmint.com/download.php
+
+Choose the **Cinnamon** edition and select a mirror to download the ``.iso``
+file.
+
+**2. Create a bootable USB drive**
+
+You need a USB drive of at least 4 GB. All existing data on the drive will
+be erased.
+
+* **Linux / macOS (dd)**:
+
+  .. warning::
+     ``dd`` will **overwrite all data** on the target device.  Triple-check
+     that ``/dev/sdX`` is your USB drive and not your system disk before
+     running the command.
+
+  ::
+
+    # Find your USB drive device (e.g. /dev/sdX or /dev/diskN)
+    lsblk              # Linux
+    diskutil list      # macOS
+
+    # Write the ISO — replace /dev/sdX with your actual device
+    sudo dd if=/path/to/linuxmint.iso of=/dev/sdX bs=4M status=progress oflag=sync
+
+* **Linux (graphical – Etcher)**:
+  Download and run `balenaEtcher <https://etcher.balena.io/>`_, select the
+  ISO and target USB drive, then click *Flash*.
+
+* **Windows (Rufus)**:
+  Download `Rufus <https://rufus.ie/>`_, select the ISO, choose your USB
+  drive, leave the partition scheme as *GPT* (for UEFI — recommended for
+  modern computers) or *MBR* (for legacy BIOS systems), and click *Start*.
+
+**3. Boot from the USB drive**
+
+1. Insert the USB drive into the target computer.
+2. Restart the computer and enter the boot menu — typically by pressing
+   ``F12``, ``F11``, ``Esc``, or ``Del`` during POST (the key shown briefly
+   on screen at startup varies by manufacturer).
+3. Select the USB drive from the boot menu.
+4. Linux Mint will load a live desktop environment where you can try Cinnamon
+   without making any changes to your computer.
+
+**4. Install Cinnamon / Linux Mint**
+
+1. Once the live desktop has loaded, double-click the
+   **Install Linux Mint** icon on the desktop.
+2. Follow the on-screen installer:
+
+   * Choose your language and keyboard layout.
+   * Optionally install multimedia codecs.
+   * Select an installation type (*Erase disk* for a fresh install, or
+     *Something else* for manual partitioning alongside an existing OS).
+   * Choose your timezone, create a user account, and click *Install*.
+
+3. When installation is complete, restart the computer and remove the USB
+   drive when prompted.
+
+After rebooting you will be greeted by the Cinnamon desktop.
+
 Contributing
 ============
 Cinnamon is on GitHub at https://github.com/SLSTunnel/cinnamon.
