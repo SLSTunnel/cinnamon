@@ -47,6 +47,10 @@ done
 
 ISO_NAME="${SUITE}-lemon-${ARCH}.iso"
 
+# Resolve the repo root now, while the working directory is still wherever
+# the caller ran the script from (i.e. before we cd into the temp build dir).
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -161,8 +165,6 @@ BUILT_ISO="$(ls "${BUILD_DIR}"/live-image-*.hybrid.iso 2>/dev/null | head -1)"
 # ---------------------------------------------------------------------------
 # Copy to output directory
 # ---------------------------------------------------------------------------
-# Resolve output path relative to the repo root (where the script was called from).
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEST="${REPO_ROOT}/${OUTPUT_DIR}"
 mkdir -p "$DEST"
 cp "$BUILT_ISO" "$DEST/$ISO_NAME"
