@@ -32,13 +32,13 @@
       <para>Now get the latest git code for everything. Run (not as root):</para>
       <screen>
         git clone git://github.com/SLSTunnel/cinnamon.git
-        git clone git://github.com/linuxmint/cinnamon-control-center.git
-        git clone git://github.com/linuxmint/cinnamon-desktop.git
-        git clone git://github.com/linuxmint/cinnamon-menus.git
-        git clone git://github.com/linuxmint/cinnamon-screensaver.git
-        git clone git://github.com/linuxmint/cinnamon-session.git
-        git clone git://github.com/linuxmint/cinnamon-settings-daemon.git
-        git clone git://github.com/linuxmint/cinnamon-translations.git
+        git clone git://github.com/SLSTunnel/cinnamon-control-center.git
+        git clone git://github.com/SLSTunnel/cinnamon-desktop.git
+        git clone git://github.com/SLSTunnel/cinnamon-menus.git
+        git clone git://github.com/SLSTunnel/cinnamon-screensaver.git
+        git clone git://github.com/SLSTunnel/cinnamon-session.git
+        git clone git://github.com/SLSTunnel/cinnamon-settings-daemon.git
+        git clone git://github.com/SLSTunnel/cinnamon-translations.git
         git clone git://github.com/linuxmint/cjs.git
         git clone git://github.com/linuxmint/muffin.git
         git clone git://github.com/linuxmint/nemo.git

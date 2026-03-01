@@ -4472,7 +4472,7 @@ cinnamon (4.0.10) unstable; urgency=medium
   * Melange/all: huge style refactor (#8447)
 
   [ Mirko Girgenti ]
-  *  FIX: https://github.com/linuxmint/cinnamon-settings-daemon/issues/192 (#8145)
+  *  FIX: https://github.com/SLSTunnel/cinnamon-settings-daemon/issues/192 (#8145)
 
   [ Simon Brown ]
   * st-scroll-view: fix a couple of fall-through situations (#8431)
