@@ -73,7 +73,7 @@
   $active_button_bg_color: $lightest_bg_color;
   $checked_button_bg_color: $lightest_bg_color;
   $insensitive_button_bg_color: darken($button_bg_color, $insensitive_factor);
-  $focus_shadow_color: transparentize($fg_color, 0.6);
+  $focus_shadow_color: transparentize($accent_bg_color, 0.4);
 
   // background color mix override for default button style
   @if $style == 'default' {

@@ -17,6 +17,7 @@ $ws_dot_inactive: $ws_indicator_height / 6;
   font-weight: bold;
   spacing: $base_padding * 2;
   padding: $base_padding * 2 $base_padding * 4;
+  box-shadow: 0 6px 20px $shadow_color;
   & > * { spacing: $base_padding * 2; }
 
   StIcon {

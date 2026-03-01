@@ -2,9 +2,9 @@ $notification_width: 34em;
 
 #notification {
   width: $notification_width;
-  border-radius: $base_border_radius;
+  border-radius: $larger_border_radius;
   border: 1px solid $borders_color;
-  box-shadow: 0 2px 4px 2px $shadow_color;
+  box-shadow: 0 6px 20px $shadow_color;
   background-color: $bg_color;
   padding: $base_padding * 2;
   margin-from-right-edge-of-screen: 20px;

@@ -1,9 +1,9 @@
 // global colors
-$bg_color: #242428;
-$base_color: #303034;
+$bg_color: #22222a;
+$base_color: #2c2c35;
 $fg_color: white;
 
-$panel_bg: #1a1a1f;
+$panel_bg: #131318;
 
 // colored elements
 $error_color: #e4705b;
@@ -20,26 +20,26 @@ $warning_bg_color: #cd9309;
 
 $notification_badge_bg_color: #e74b37;
 
-$accent_color: #78aeed;
-$accent_bg_color: #3584e4;
+$accent_color: #89b4fa;
+$accent_bg_color: #5294e2;
 
 $large_icon_color: transparentize($fg_color, 0.6);
 $light_text_color: mix($fg_color, $bg_color, 65%);
 
 // used for button, entries and highlighted items
-$light_bg_color: #39393c;
-$light_base_color: #444448;
-$lighter_bg_color: #454549;
-$lightest_bg_color: #656569;
+$light_bg_color: #36363f;
+$light_base_color: #40404a;
+$lighter_bg_color: #424250;
+$lightest_bg_color: #606070;
 
 // link colors
-$link_color: #1c71d8;
+$link_color: #4a90e2;
 
 // borders
-$borders_color: #333337;
+$borders_color: #2e2e38;
 
 // shadows
-$shadow_color: rgba(0, 0, 0, 0.5);
+$shadow_color: rgba(0, 0, 0, 0.65);
 
 // insensitive state
 $insensitive_fg_color: mix($fg_color, $bg_color, 40%);

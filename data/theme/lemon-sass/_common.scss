@@ -180,6 +180,7 @@ stage {
   background-color: transparentize($bg_color, 0.01);
   border: 1px solid transparentize($borders_color, 0.01);
   border-radius: $base_border_radius;
+  box-shadow: 0 6px 20px $shadow_color;
   text-align: center;
   padding: $base_padding * 4;
 }

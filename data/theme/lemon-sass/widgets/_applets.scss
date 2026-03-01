@@ -9,6 +9,7 @@ $applet_padding: 6px;
     padding: 0 $applet_padding;
     spacing: $applet_padding;
     text-align: center;
+    border-radius: $base_border_radius;
 
     &.vertical { padding: $applet_padding 0; }
 

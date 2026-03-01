@@ -61,10 +61,10 @@
   }
 
   // create a border on the side we want for each location
-  &-top { box-shadow: inset 0 -1px $borders_color; }
-  &-bottom { box-shadow: inset 0 1px $borders_color; }
-  &-left { box-shadow: inset -1px 0 $borders_color; }
-  &-right { box-shadow: inset 1px 0 $borders_color; }
+  &-top { box-shadow: inset 0 -1px $borders_color, 0 2px 8px rgba(0, 0, 0, 0.4); }
+  &-bottom { box-shadow: inset 0 1px $borders_color, 0 -2px 8px rgba(0, 0, 0, 0.4); }
+  &-left { box-shadow: inset -1px 0 $borders_color, 2px 0 8px rgba(0, 0, 0, 0.4); }
+  &-right { box-shadow: inset 1px 0 $borders_color, -2px 0 8px rgba(0, 0, 0, 0.4); }
 
   // used when adding a new panel
   &-dummy {

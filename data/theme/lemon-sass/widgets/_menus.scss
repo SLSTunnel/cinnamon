@@ -13,7 +13,7 @@ $menuitem_border_radius: $base_border_radius * 1;
   background-color: $bg_color;
   border-radius: $larger_border_radius;
   border: 1px solid $borders_color;
-  box-shadow: 0 0 6px $shadow_color;
+  box-shadow: 0 6px 20px $shadow_color;
 }
 
 // menu items
@@ -21,7 +21,7 @@ $menuitem_border_radius: $base_border_radius * 1;
   @extend %menuitem;
 
   &:active {
-    background-color: $light_bg_color;
+    background-color: transparentize($accent_bg_color, 0.8);
   }
 
   &:insensitive {
